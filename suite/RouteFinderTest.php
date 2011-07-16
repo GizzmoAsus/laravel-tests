@@ -33,6 +33,17 @@ class RouteFinderTest extends PHPUnit_Framework_TestCase {
 		Utils::rrmdir(APP_PATH.'routes');
 	}
 
+	public function testRouteFinderLoadsBaseRoutesWhenFindingRoutesWithRouteFolder()
+	{
+		System\Route\Finder::$routes = null;
+		$this->setupRoutesDirectory();
+
+		System\Route\Finder::find('user');
+		$this->assertArrayHasKey('GET /', System\Route\Finder::$routes);
+
+		Utils::rrmdir(APP_PATH.'routes');
+	}
+
 	private function setupRoutesDirectory()
 	{
 		mkdir(APP_PATH.'routes', 0777);
