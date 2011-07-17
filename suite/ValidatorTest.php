@@ -25,6 +25,14 @@ class ValidatorTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(Validator::make($attributes, $rules)->valid());
 	}
 
+	/**
+	 * @dataProvider failingRuleProvider
+	 */
+	public function testRulesFailWhenProperCriteriaIsNotMet($attributes, $rules)
+	{
+		$this->assertFalse(Validator::make($attributes, $rules)->valid());
+	}
+
 	public function testUniqueRulePassesWhenValueIsUnique()
 	{
 		Utils::setup_db();
@@ -90,6 +98,39 @@ class ValidatorTest extends PHPUnit_Framework_TestCase {
 			array(array('test' => 'abc123'), array('test' => 'alpha_dash')),
 			array(array('test' => 'abc123_-'), array('test' => 'alpha_dash')),
 			array(array('test' => 'abc'), array('test' => 'alpha_dash')),
+		);
+	}
+
+	public function failingRuleProvider()
+	{
+		return array(
+			array(array('test' => ''), array('test' => 'required')),
+			array(array(), array('test' => 'required')),
+			array(array('test' => 'test', 'test_confirmation' => 'test_doesnt_match'), array('test' => 'confirmed')),
+			array(array('test' => 'test'), array('test' => 'confirmed')),
+			array(array('test' => 'no'), array('test' => 'accepted')),
+			array(array('test' => 'a1'), array('test' => 'numeric')),
+			array(array('test' => 1.2), array('test' => 'integer')),
+			array(array('test' => 'a1'), array('test' => 'integer')),
+			array(array('test' => 4), array('test' => 'size:3')),
+			array(array('test' => 'aaaa'), array('test' => 'size:3')),
+			array(array('test' => 'aaaa'), array('test' => 'between:5,10')),
+			array(array('test' => 'aaaaaaaaaaa'), array('test' => 'between:5,10')),
+			array(array('test' => 4), array('test' => 'between:5,10')),
+			array(array('test' => 11), array('test' => 'between:5,10')),
+			array(array('test' => 2), array('test' => 'min:3')),
+			array(array('test' => 'aa'), array('test' => 'min:3')),
+			array(array('test' => 4), array('test' => 'max:3')),
+			array(array('test' => 'aaaa'), array('test' => 'max:3')),
+			array(array('test' => 'test'), array('test' => 'in:name,other')),
+			array(array('test' => 'test'), array('test' => 'in:other,name')),
+			array(array('test' => 'other'), array('test' => 'not_in:test,other')),
+			array(array('test' => 'test'), array('test' => 'email')),
+			array(array('test' => 'not-a-url'), array('test' => 'url')),
+			array(array('test' => 'http://www.iewc.dslsks.com'), array('test' => 'active_url')),
+			array(array('test' => 'abc1'), array('test' => 'alpha')),
+			array(array('test' => 'abc-123'), array('test' => 'alpha_num')),
+			array(array('test' => 'abc.123'), array('test' => 'alpha_dash')),
 		);
 	}
 
