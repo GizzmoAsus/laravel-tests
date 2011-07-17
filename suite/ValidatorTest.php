@@ -18,6 +18,14 @@ class ValidatorTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @expectedException Exception
+	 */
+	public function testExceptionThrownIfValidatorDoesntExist()
+	{
+		Validator::make(array('name' => 'test'), array('name' => 'doesnt-exist'))->valid();
+	}
+
+	/**
 	 * @dataProvider passingRuleProvider
 	 */
 	public function testRulesPassWhenProperCriteriaIsMet($attributes, $rules)
@@ -59,6 +67,50 @@ class ValidatorTest extends PHPUnit_Framework_TestCase {
 	{
 		$this->assertFalse(Validator::make(array('picture' => array('tmp_name' => FIXTURE_PATH.'fixture.sqlite')), array('picture' => 'mimes:jpg'))->valid());
 		$this->assertFalse(Validator::make(array('picture' => array('tmp_name' => FIXTURE_PATH.'fixture.sqlite')), array('picture' => 'image'))->valid());
+	}
+
+	public function testCustomMessagesAreRespected()
+	{
+		$validator = Validator::make(array('name' => ''), array('name' => 'required'), array('required' => 'Test Message'));
+		$validator->valid();
+
+		$this->assertEquals($validator->errors->first('name'), 'Test Message');
+
+		$validator = Validator::make(array('name' => ''), array('name' => 'required'), array('name_required' => 'Test Message'));
+		$validator->valid();
+
+		$this->assertEquals($validator->errors->first('name'), 'Test Message');
+	}
+
+	public function testErrorMessagePlaceholdersAreReplaced()
+	{
+		$messages = array('required' => ':attribute', 'size' => ':size', 'between' => ':max:min', 'min' => ':min', 'max' => ':max', 'in' => ':values');
+
+		$validator = Validator::make(array('name' => '', 'first_name' => ''), array('name' => 'required', 'first_name' => 'required'), $messages);
+		$validator->valid();
+
+		$this->assertEquals($validator->errors->first('name'), 'name');
+		$this->assertEquals($validator->errors->first('first_name'), 'first name');
+
+		$validator = Validator::make(array('name' => 'taylor'), array('name' => 'size:3'), $messages);
+		$validator->valid();
+
+		$this->assertEquals($validator->errors->first('name'), '3');
+
+		$validator = Validator::make(array('name' => 'taylor'), array('name' => 'max:3'), $messages);
+		$validator->valid();
+
+		$this->assertEquals($validator->errors->first('name'), '3');
+
+		$validator = Validator::make(array('name' => 'taylor'), array('name' => 'min:7'), $messages);
+		$validator->valid();
+
+		$this->assertEquals($validator->errors->first('name'), '7');
+
+		$validator = Validator::make(array('name' => 'taylor'), array('name' => 'between:1,2'), $messages);
+		$validator->valid();
+
+		$this->assertEquals($validator->errors->first('name'), '21');
 	}
 
 	public function passingRuleProvider()
