@@ -111,6 +111,11 @@ class ValidatorTest extends PHPUnit_Framework_TestCase {
 		$validator->valid();
 
 		$this->assertEquals($validator->errors->first('name'), '21');
+
+		$validator = Validator::make(array('name' => 'taylor'), array('name' => 'in:1,2'), $messages);
+		$validator->valid();
+
+		$this->assertEquals($validator->errors->first('name'), '1, 2');
 	}
 
 	public function passingRuleProvider()
