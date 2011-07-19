@@ -106,6 +106,19 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 		$this->assertArrayHasKey('GET /user', System\Router::load('user'));
 		$this->assertArrayHasKey('GET /cart/edit', System\Router::load('cart'));
 		$this->assertArrayHasKey('GET /cart/edit', System\Router::load('cart/edit'));
+
+		$this->setupNestedRouteFiles();
+
+		// Retest the assertions above...
+		$this->assertArrayHasKey('GET /user', System\Router::load('user'));
+		$this->assertArrayHasKey('GET /cart/edit', System\Router::load('cart'));
+		$this->assertArrayHasKey('GET /cart/edit', System\Router::load('cart/edit'));
+		
+		// Test the nested routes...
+		$this->assertArrayHasKey('GET /user/edit', System\Router::load('user/edit'));
+		$this->assertArrayHasKey('GET /user/edit', System\Router::load('user/edit/test'));
+		$this->assertArrayHasKey('GET /admin/panel', System\Router::load('admin/panel'));
+		$this->assertArrayHasKey('GET /user/update/admin', System\Router::load('user/update/admin'));
 	}
 
 	public function testRouteLoaderLoadsBaseRoutesFileForEveryRequest()
@@ -118,8 +131,19 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 	{
 		mkdir(APP_PATH.'routes', 0777);
 
-		file_put_contents(APP_PATH.'routes/user.php', "<?php return array('GET /user' => function() {return '/user';}); ?>", LOCK_EX);		
-		file_put_contents(APP_PATH.'routes/cart.php', "<?php return array('GET /cart/edit' => function() {return '/cart/edit';}); ?>", LOCK_EX);		
+		file_put_contents(APP_PATH.'routes/user.php', "<?php return array('GET /user' => function() {return '/user';}); ?>", LOCK_EX);
+		file_put_contents(APP_PATH.'routes/cart.php', "<?php return array('GET /cart/edit' => function() {return '/cart/edit';}); ?>", LOCK_EX);
+	}
+
+	private function setupNestedRouteFiles()
+	{
+		mkdir(APP_PATH.'routes/admin', 0777);
+		mkdir(APP_PATH.'routes/user', 0777);
+		mkdir(APP_PATH.'routes/user/update', 0777);
+
+		file_put_contents(APP_PATH.'routes/user/edit.php', "<?php return array('GET /user/edit' => function() {}, 'GET /user/edit/test' => function() {}); ?>", LOCK_EX);
+		file_put_contents(APP_PATH.'routes/user/update/admin.php', "<?php return array('GET /user/update/admin' => function() {}); ?>", LOCK_EX);
+		file_put_contents(APP_PATH.'routes/admin/panel.php', "<?php return array('GET /admin/panel' => function() {}); ?>", LOCK_EX);
 	}
 
 }
