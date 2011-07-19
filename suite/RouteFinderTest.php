@@ -12,6 +12,11 @@ class RouteFinderTest extends PHPUnit_Framework_TestCase {
 		System\Route\Finder::$routes = $routes;
 	}
 
+	public function tearDown()
+	{
+		Utils::rrmdir(APP_PATH.'routes');
+	}
+
 	public function testRouteFinderReturnsNullWhenRouteIsNotFound()
 	{
 		$this->assertNull(System\Route\Finder::find('doesnt-exist'));
@@ -29,8 +34,6 @@ class RouteFinderTest extends PHPUnit_Framework_TestCase {
 		$this->setupRoutesDirectory();
 
 		$this->assertArrayHasKey('GET /user', System\Route\Finder::find('user'));
-
-		Utils::rrmdir(APP_PATH.'routes');
 	}
 
 	public function testRouteFinderLoadsBaseRoutesWhenFindingRoutesWithRouteFolder()
@@ -40,14 +43,16 @@ class RouteFinderTest extends PHPUnit_Framework_TestCase {
 
 		System\Route\Finder::find('user');
 		$this->assertArrayHasKey('GET /', System\Route\Finder::$routes);
-
-		Utils::rrmdir(APP_PATH.'routes');
+		$this->assertArrayHasKey('GET /user/admin', System\Route\Finder::$routes);
 	}
 
 	private function setupRoutesDirectory()
 	{
 		mkdir(APP_PATH.'routes', 0777);
-		file_put_contents(APP_PATH.'routes/user.php', "<?php return array('GET /user' => array('name' => 'user', 'do' => function() {return '/user';})); ?>", LOCK_EX);		
+		mkdir(APP_PATH.'routes/user', 0777);
+
+		file_put_contents(APP_PATH.'routes/user.php', "<?php return array('GET /user' => array('name' => 'user', 'do' => function() {})); ?>", LOCK_EX);		
+		file_put_contents(APP_PATH.'routes/user/admin.php', "<?php return array('GET /user/admin' => array('name' => 'admin', 'do' => function() {})); ?>", LOCK_EX);		
 	}
 
 }
