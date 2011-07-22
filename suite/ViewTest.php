@@ -4,29 +4,29 @@ class ViewTest extends PHPUnit_Framework_TestCase {
 
 	public function testConstructorSetsViewNameAndData()
 	{
-		$view = new System\View('view', array('name' => 'test'));
+		$view = new System\View('home/index', array('name' => 'test'));
 
-		$this->assertEquals($view->view, 'view');
+		$this->assertEquals($view->view, 'home/index');
 		$this->assertEquals($view->data, array('name' => 'test'));
 
-		$view = new System\View('view');
+		$view = new System\View('home/index');
 		$this->assertEquals($view->data, array());
 	}
 
 	public function testMakeMethodReturnsNewViewInstance()
 	{
-		$this->assertInstanceOf('System\\View', System\View::make('test'));
+		$this->assertInstanceOf('System\\View', System\View::make('home/index'));
 	}
 
 	public function testBindMethodAddsItemToViewData()
 	{
-		$view = System\View::make('test')->bind('name', 'test');
+		$view = System\View::make('home/index')->bind('name', 'test');
 		$this->assertEquals($view->data, array('name' => 'test'));
 	}
 
 	public function testBoundViewDataCanBeRetrievedThroughMagicMethods()
 	{
-		$view = System\View::make('test')->bind('name', 'test');
+		$view = System\View::make('home/index')->bind('name', 'test');
 
 		$this->assertTrue(isset($view->name));
 		$this->assertEquals($view->name, 'test');
