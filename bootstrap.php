@@ -6,8 +6,14 @@
 define('BASE_PATH', realpath('../laravel').'/');
 define('APP_PATH', realpath('../laravel/application').'/');
 define('SYS_PATH', realpath('../laravel/system').'/');
-define('PUBLIC_PATH', realpath('../laravel/public').'/');
+define('CONFIG_PATH', APP_PATH.'config/');
 define('PACKAGE_PATH', APP_PATH.'packages/');
+define('PUBLIC_PATH', BASE_PATH.'public/');
+define('PUBLIC_PATH', BASE_PATH.'public/');
+
+// --------------------------------------------------------------
+// Define the fixture path.
+// --------------------------------------------------------------
 define('FIXTURE_PATH', realpath('fixtures').'/');
 
 // --------------------------------------------------------------
