@@ -19,14 +19,21 @@ define('SYS_PATH', realpath('../laravel/system').'/');
 // --------------------------------------------------------------
 // Define various other framework paths.
 // --------------------------------------------------------------
+define('CACHE_PATH', APP_PATH.'storage/cache/');
 define('CONFIG_PATH', APP_PATH.'config/');
-define('FIXTURE_PATH', realpath('fixtures').'/');
+define('DATABASE_PATH', APP_PATH.'storage/db/');
 define('LIBRARY_PATH', APP_PATH.'libraries/');
 define('MODEL_PATH', APP_PATH.'models/');
 define('PACKAGE_PATH', APP_PATH.'packages/');
 define('ROUTE_PATH', APP_PATH.'routes/');
+define('SESSION_PATH', APP_PATH.'storage/sessions/');
 define('SYS_VIEW_PATH', SYS_PATH.'views/');
 define('VIEW_PATH', APP_PATH.'views/');
+
+// --------------------------------------------------------------
+// Define the fixture path.
+// --------------------------------------------------------------
+define('FIXTURE_PATH', realpath('fixtures').'/');
 
 // --------------------------------------------------------------
 // Define the PHP file extension.

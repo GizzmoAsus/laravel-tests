@@ -35,6 +35,14 @@ class ViewTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse(isset($view->name));
 	}
 
+	public function testPartialMethodPutsAViewInstanceInTheViewData()
+	{
+		$view = System\View::make('home/index')->partial('partial', 'home/index');
+
+		$this->assertInstanceOf('System\\View', $view->partial);
+		$this->assertEquals($view->partial->view, 'home/index');
+	}
+
 	public function testGetMethodReturnsStringContentOfView()
 	{
 		$this->assertTrue(is_string(System\View::make('home/index')->get()));
