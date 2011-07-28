@@ -2,24 +2,31 @@
 
 class RoutingTest extends PHPUnit_Framework_TestCase {
 
-	public static function setUpBeforeClass()
+	/**
+	 * Mocked Router.
+	 */
+	public $router;
+
+	public function setUp()
 	{
-		$routes = array();
+		if (is_null($this->router))
+		{
+			$router = $this->getMockClass('System\\Router', array('load'));
 
-		$routes['GET /'] = array('name' => 'root', 'do' => function() {});
-		$routes['GET /home'] = array('name' => 'home', 'do' => function() {});
-		$routes['POST /home'] = array('name' => 'post-home', 'do' => function() {});
-		$routes['GET /user/(:num)'] = array('name' => 'user', 'do' => function() {});
-		$routes['GET /user/(:any)/(:num)/edit'] = array('name' => 'edit', 'do' => function() {});
-		$routes['GET /cart/(:num?)'] = array('name' => 'cart', 'do' => function() {});
-		$routes['GET /download/(:num?)/(:any?)'] = array('name' => 'download', 'do' => function() {});
+			$routes = array();
 
-		System\Router::$routes = $routes;
-	}
+			$routes['GET /'] = array('name' => 'root', 'do' => function() {});
+			$routes['GET /home'] = array('name' => 'home', 'do' => function() {});
+			$routes['POST /home'] = array('name' => 'post-home', 'do' => function() {});
+			$routes['GET /user/(:num)'] = array('name' => 'user', 'do' => function() {});
+			$routes['GET /user/(:any)/(:num)/edit'] = array('name' => 'edit', 'do' => function() {});
+			$routes['GET /cart/(:num?)'] = array('name' => 'cart', 'do' => function() {});
+			$routes['GET /download/(:num?)/(:any?)'] = array('name' => 'download', 'do' => function() {});
 
-	public static function tearDownAfterClass()
-	{
-		System\Router::$routes = null;
+			$router::staticExpects($this->any())->method('load')->will($this->returnValue($routes));
+
+			$this->router = $router;
+		}
 	}
 
 	public function tearDown()
@@ -29,76 +36,83 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	public function testRouterReturnsNullWhenNotFound()
 	{
-		$this->assertNull(System\Router::route('GET', 'doesnt-exist'));
+		$router = $this->router;
+		$this->assertNull($router::route('GET', 'doesnt-exist'));
 	}
 
 	public function testRouterRoutesToRootWhenItIsRequest()
 	{
-		$this->assertEquals(System\Router::route('GET', '/')->callback['name'], 'root');
+		$router = $this->router;
+		$this->assertEquals($router::route('GET', '/')->callback['name'], 'root');
 	}
 
 	public function testRouterRoutesToProperRouteWhenSegmentsArePresent()
 	{
-		$this->assertEquals(System\Router::route('GET', 'home')->callback['name'], 'home');
-		$this->assertEquals(System\Router::route('GET', 'user/1')->callback['name'], 'user');
-		$this->assertEquals(System\Router::route('GET', 'user/taylor/25/edit')->callback['name'], 'edit');
-		$this->assertEquals(System\Router::route('POST', 'home')->callback['name'], 'post-home');
+		$router = $this->router;
+		$this->assertEquals($router::route('GET', 'home')->callback['name'], 'home');
+		$this->assertEquals($router::route('GET', 'user/1')->callback['name'], 'user');
+		$this->assertEquals($router::route('GET', 'user/taylor/25/edit')->callback['name'], 'edit');
+		$this->assertEquals($router::route('POST', 'home')->callback['name'], 'post-home');
 	}
 
 	public function testRouterGivesRouteProperSegmentsWhenTheyArePresent()
 	{
-		$this->assertEquals(System\Router::route('GET', 'user/1')->parameters[0], 1);
-		$this->assertEquals(count(System\Router::route('GET', 'user/1')->parameters), 1);
-
-		$this->assertEquals(System\Router::route('GET', 'user/taylor/25/edit')->parameters[0], 'taylor');
-		$this->assertEquals(System\Router::route('GET', 'user/taylor/25/edit')->parameters[1], 25);
-		$this->assertEquals(count(System\Router::route('GET', 'user/taylor/25/edit')->parameters), 2);		
+		$router = $this->router;
+		$this->assertEquals($router::route('GET', 'user/1')->parameters[0], 1);
+		$this->assertEquals(count($router::route('GET', 'user/1')->parameters), 1);
+		$this->assertEquals($router::route('GET', 'user/taylor/25/edit')->parameters[0], 'taylor');
+		$this->assertEquals($router::route('GET', 'user/taylor/25/edit')->parameters[1], 25);
+		$this->assertEquals(count($router::route('GET', 'user/taylor/25/edit')->parameters), 2);		
 	}
 
 	public function testRouterRoutesToProperRouteWhenUsingOptionalSegments()
 	{
-		$this->assertEquals(System\Router::route('GET', 'cart')->callback['name'], 'cart');
-		$this->assertEquals(System\Router::route('GET', 'cart/1')->callback['name'], 'cart');
-		$this->assertEquals(System\Router::route('GET', 'download')->callback['name'], 'download');
-		$this->assertEquals(System\Router::route('GET', 'download/1')->callback['name'], 'download');
-		$this->assertEquals(System\Router::route('GET', 'download/1/a')->callback['name'], 'download');
+		$router = $this->router;
+		$this->assertEquals($router::route('GET', 'cart')->callback['name'], 'cart');
+		$this->assertEquals($router::route('GET', 'cart/1')->callback['name'], 'cart');
+		$this->assertEquals($router::route('GET', 'download')->callback['name'], 'download');
+		$this->assertEquals($router::route('GET', 'download/1')->callback['name'], 'download');
+		$this->assertEquals($router::route('GET', 'download/1/a')->callback['name'], 'download');
 	}
 
 	public function testRouterGivesRouteProperOptionalSegmentsWhenTheyArePresent()
 	{
-		$this->assertTrue(is_array(System\Router::route('GET', 'cart')->parameters));
-		$this->assertEquals(count(System\Router::route('GET', 'cart')->parameters), 0);
-		$this->assertEquals(System\Router::route('GET', 'cart/1')->parameters[0], 1);
+		$router = $this->router;
+		$this->assertTrue(is_array($router::route('GET', 'cart')->parameters));
+		$this->assertEquals(count($router::route('GET', 'cart')->parameters), 0);
+		$this->assertEquals($router::route('GET', 'cart/1')->parameters[0], 1);
 
-		$this->assertEquals(count(System\Router::route('GET', 'download')->parameters), 0);
-		$this->assertEquals(System\Router::route('GET', 'download/1')->parameters[0], 1);
-		$this->assertEquals(count(System\Router::route('GET', 'download/1')->parameters), 1);
+		$this->assertEquals(count($router::route('GET', 'download')->parameters), 0);
+		$this->assertEquals($router::route('GET', 'download/1')->parameters[0], 1);
+		$this->assertEquals(count($router::route('GET', 'download/1')->parameters), 1);
 
-		$this->assertEquals(System\Router::route('GET', 'download/1/a')->parameters[0], 1);
-		$this->assertEquals(System\Router::route('GET', 'download/1/a')->parameters[1], 'a');
-		$this->assertEquals(count(System\Router::route('GET', 'download/1/a')->parameters), 2);
+		$this->assertEquals($router::route('GET', 'download/1/a')->parameters[0], 1);
+		$this->assertEquals($router::route('GET', 'download/1/a')->parameters[1], 'a');
+		$this->assertEquals(count($router::route('GET', 'download/1/a')->parameters), 2);
 	}
 
 	public function testRouterReturnsNullWhenRouteNotFound()
 	{
-		$this->assertNull(System\Router::route('GET', 'user/taylor/taylor/edit'));
-		$this->assertNull(System\Router::route('GET', 'user/taylor'));
-		$this->assertNull(System\Router::route('GET', 'user/12-3'));
-		$this->assertNull(System\Router::route('GET', 'cart/a'));
-		$this->assertNull(System\Router::route('GET', 'cart/12-3'));
-		$this->assertNull(System\Router::route('GET', 'download/a'));
-		$this->assertNull(System\Router::route('GET', 'download/1a'));
-		$this->assertNull(System\Router::route('POST', 'user/taylor/25/edit'));
+		$router = $this->router;
+		$this->assertNull($router::route('GET', 'user/taylor/taylor/edit'));
+		$this->assertNull($router::route('GET', 'user/taylor'));
+		$this->assertNull($router::route('GET', 'user/12-3'));
+		$this->assertNull($router::route('GET', 'cart/a'));
+		$this->assertNull($router::route('GET', 'cart/12-3'));
+		$this->assertNull($router::route('GET', 'download/a'));
+		$this->assertNull($router::route('GET', 'download/1a'));
+		$this->assertNull($router::route('POST', 'user/taylor/25/edit'));
 	}
 
 	public function testRouteLoaderShouldReturnSingleRoutesFileWhenNoFolderIsPresent()
 	{
-		$routes = System\Router::load('test');
-
-		// Only the Laravel default route should be returned.
-		$this->assertArrayHasKey('GET /', $routes);
+		$router = $this->router;
+		$this->assertArrayHasKey('GET /', $router::load('test'));
 	}
 
+	/**
+	 * Note: It is OK for these tests to not use the mocked Router.
+	 */
 	public function testRouteLoaderLoadsRouteFilesInRouteDirectoryByURI()
 	{
 		$this->setupRoutesDirectory();
@@ -121,6 +135,9 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 		$this->assertArrayHasKey('GET /user/update/admin', System\Router::load('user/update/admin'));
 	}
 
+	/**
+	 * Note: It is OK for these tests to not use the mocked Router.
+	 */
 	public function testRouteLoaderLoadsBaseRoutesFileForEveryRequest()
 	{
 		$this->setupRoutesDirectory();
