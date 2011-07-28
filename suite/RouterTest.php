@@ -15,7 +15,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 			$routes = array();
 
-			$routes['GET /'] = array('name' => 'root', 'do' => function() {});
+			$routes['GET /'] = array('name' => 'root', 'do' => function() {return 'root';});
 			$routes['GET /home'] = array('name' => 'home', 'do' => function() {});
 			$routes['POST /home'] = array('name' => 'post-home', 'do' => function() {});
 			$routes['GET /user/(:num)'] = array('name' => 'user', 'do' => function() {});
@@ -142,6 +142,19 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 	{
 		$this->setupRoutesDirectory();
 		$this->assertArrayHasKey('GET /', System\Router::load('user'));
+	}
+
+	public function testRouterCallMethodCallsRoutes()
+	{
+		$router = $this->router;
+		$this->assertInstanceOf('System\\Response', $router::call('/'));
+		$this->assertEquals($router::call('/')->content, 'root');
+	}
+
+	public function testRouterCallMethodReturnsNullWhenRouteDoesntExist()
+	{
+		$router = $this->router;
+		$this->assertNull($router::call('doesnt.exist'));
 	}
 
 	private function setupRoutesDirectory()
