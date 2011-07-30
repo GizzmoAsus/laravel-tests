@@ -61,7 +61,6 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	public function testRouterGivesRouteProperSegmentsWhenTheyArePresent()
 	{
-		
 		$this->assertEquals(System\Router::make('GET', 'user/1', $this->routes)->route()->parameters[0], 1);
 		$this->assertEquals(count(System\Router::make('GET', 'user/1', $this->routes)->route()->parameters), 1);
 		$this->assertEquals(System\Router::make('GET', 'user/taylor/25/edit', $this->routes)->route()->parameters[0], 'taylor');
