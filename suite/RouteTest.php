@@ -22,7 +22,7 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 	public function testRouteCallWithNullBeforeFilterReturnsRouteResponse()
 	{
 		$route = new System\Route('GET /', array('before' => 'test', 'do' => function() {return 'route';}));
-		System\Route\Filter::$filters = array('test' => function() {return null;});
+		System\Route_Filter::$filters = array('test' => function() {return null;});
 
 		$this->assertEquals($route->call()->content, 'route');
 	}
@@ -30,7 +30,7 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 	public function testRouteCallWithOverridingBeforeFilterReturnsFilterResponse()
 	{
 		$route = new System\Route('GET /', array('before' => 'test', 'do' => function() {return 'route';}));
-		System\Route\Filter::$filters = array('test' => function() {return 'filter';});
+		System\Route_Filter::$filters = array('test' => function() {return 'filter';});
 
 		$this->assertEquals($route->call()->content, 'filter');
 	}
@@ -38,7 +38,7 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 	public function testRouteAfterFilterIsCalled()
 	{
 		$route = new System\Route('GET /', array('after' => 'test', 'do' => function() {return 'route';}));
-		System\Route\Filter::$filters = array('test' => function() {define('LARAVEL_TEST_AFTER_FILTER', 'ran');});
+		System\Route_Filter::$filters = array('test' => function() {define('LARAVEL_TEST_AFTER_FILTER', 'ran');});
 
 		$route->call();
 
@@ -48,7 +48,7 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 	public function testRouteAfterFilterDoesNotAffectResponse()
 	{
 		$route = new System\Route('GET /', array('after' => 'test', 'do' => function() {return 'route';}));
-		System\Route\Filter::$filters = array('test' => function() {return 'filter';});
+		System\Route_Filter::$filters = array('test' => function() {return 'filter';});
 
 		$this->assertEquals($route->call()->content, 'route');
 	}

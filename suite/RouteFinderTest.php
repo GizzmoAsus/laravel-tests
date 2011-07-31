@@ -9,7 +9,7 @@ class RouteFinderTest extends PHPUnit_Framework_TestCase {
 		$routes['GET /home'] = array('GET /home' => array('name' => 'home', 'do' => function() {}));
 		$routes['GET /user'] = array('GET /user' => array('name' => 'user', 'do' => function() {}));
 
-		System\Route\Finder::$routes = $routes;
+		System\Route_Finder::$routes = $routes;
 	}
 
 	public function tearDown()
@@ -19,31 +19,31 @@ class RouteFinderTest extends PHPUnit_Framework_TestCase {
 
 	public function testRouteFinderReturnsNullWhenRouteIsNotFound()
 	{
-		$this->assertNull(System\Route\Finder::find('doesnt-exist'));
+		$this->assertNull(System\Route_Finder::find('doesnt-exist'));
 	}
 
 	public function testRouteFinderReturnsRouteWhenFoundInSingleRoutesFile()
 	{
-		$this->assertArrayHasKey('GET /home', System\Route\Finder::find('home'));
-		$this->assertArrayHasKey('GET /user', System\Route\Finder::find('user'));
+		$this->assertArrayHasKey('GET /home', System\Route_Finder::find('home'));
+		$this->assertArrayHasKey('GET /user', System\Route_Finder::find('user'));
 	}
 
 	public function testRouteFinderLoadsRoutesFromRouteDirectoryToFindRoutes()
 	{
-		System\Route\Finder::$routes = null;
+		System\Route_Finder::$routes = null;
 		$this->setupRoutesDirectory();
 
-		$this->assertArrayHasKey('GET /user', System\Route\Finder::find('user'));
+		$this->assertArrayHasKey('GET /user', System\Route_Finder::find('user'));
 	}
 
 	public function testRouteFinderLoadsBaseRoutesWhenFindingRoutesWithRouteFolder()
 	{
-		System\Route\Finder::$routes = null;
+		System\Route_Finder::$routes = null;
 		$this->setupRoutesDirectory();
 
-		System\Route\Finder::find('user');
-		$this->assertArrayHasKey('GET /', System\Route\Finder::$routes);
-		$this->assertArrayHasKey('GET /user/admin', System\Route\Finder::$routes);
+		System\Route_Finder::find('user');
+		$this->assertArrayHasKey('GET /', System\Route_Finder::$routes);
+		$this->assertArrayHasKey('GET /user/admin', System\Route_Finder::$routes);
 	}
 
 	private function setupRoutesDirectory()
