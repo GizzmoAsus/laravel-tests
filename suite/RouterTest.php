@@ -123,9 +123,20 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @dataProvider routeDirectoryRouteProvider
-	 * @dataProvider nestedRouteDirectoryRouteProvider
 	 */
 	public function testRouterLoaderLoadsRouteFilesInNestedRouteDirectoryByURI($method, $uri, $key)
+	{
+		$this->setupRoutesDirectory();
+		$this->setupNestedRouteFiles();
+
+		$router = new System\Router($method, $uri);
+		$this->assertArrayHasKey($key, $router->routes);
+	}
+
+	/**
+	 * @dataProvider nestedRouteDirectoryRouteProvider
+	 */
+	public function testRouterLoaderLoadsRouteFilesInNestedRouteDirectoryByURI2($method, $uri, $key)
 	{
 		$this->setupRoutesDirectory();
 		$this->setupNestedRouteFiles();
