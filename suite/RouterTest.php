@@ -31,12 +31,12 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	public function testRouterReturnsNullWhenNotFound()
 	{
-		$this->assertNull(System\Router::make('GET', 'doesnt-exist')->route());
+		$this->assertNull(System\Routing\Router::make('GET', 'doesnt-exist', array())->route());
 	}
 
 	public function testRouterRoutesToRootWhenItIsRequest()
 	{
-		$router = new System\Router('GET', '/', $this->routes);
+		$router = new System\Routing\Router('GET', '/', $this->routes);
 		$this->assertEquals($router->route()->callback['name'], 'root');
 	}
 
@@ -45,7 +45,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testRouterRoutesToProperRouteWhenSegmentsArePresent($method, $uri, $name)
 	{
-		$router = new System\Router($method, $uri, $this->routes);
+		$router = new System\Routing\Router($method, $uri, $this->routes);
 		$this->assertEquals($router->route()->callback['name'], $name);
 	}
 
@@ -61,52 +61,52 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 
 	public function testRouterGivesRouteProperSegmentsWhenTheyArePresent()
 	{
-		$this->assertEquals(System\Router::make('GET', 'user/1', $this->routes)->route()->parameters[0], 1);
-		$this->assertEquals(count(System\Router::make('GET', 'user/1', $this->routes)->route()->parameters), 1);
-		$this->assertEquals(System\Router::make('GET', 'user/taylor/25/edit', $this->routes)->route()->parameters[0], 'taylor');
-		$this->assertEquals(System\Router::make('GET', 'user/taylor/25/edit', $this->routes)->route()->parameters[1], 25);
-		$this->assertEquals(count(System\Router::make('GET', 'user/taylor/25/edit', $this->routes)->route()->parameters), 2);		
+		$this->assertEquals(System\Routing\Router::make('GET', 'user/1', $this->routes)->route()->parameters[0], 1);
+		$this->assertEquals(count(System\Routing\Router::make('GET', 'user/1', $this->routes)->route()->parameters), 1);
+		$this->assertEquals(System\Routing\Router::make('GET', 'user/taylor/25/edit', $this->routes)->route()->parameters[0], 'taylor');
+		$this->assertEquals(System\Routing\Router::make('GET', 'user/taylor/25/edit', $this->routes)->route()->parameters[1], 25);
+		$this->assertEquals(count(System\Routing\Router::make('GET', 'user/taylor/25/edit', $this->routes)->route()->parameters), 2);		
 	}
 
 	public function testRouterRoutesToProperRouteWhenUsingOptionalSegments()
 	{
-		$this->assertEquals(System\Router::make('GET', 'cart', $this->routes)->route()->callback['name'], 'cart');
-		$this->assertEquals(System\Router::make('GET', 'cart/1', $this->routes)->route()->callback['name'], 'cart');
-		$this->assertEquals(System\Router::make('GET', 'download', $this->routes)->route()->callback['name'], 'download');
-		$this->assertEquals(System\Router::make('GET', 'download/1', $this->routes)->route()->callback['name'], 'download');
-		$this->assertEquals(System\Router::make('GET', 'download/1/a', $this->routes)->route()->callback['name'], 'download');
+		$this->assertEquals(System\Routing\Router::make('GET', 'cart', $this->routes)->route()->callback['name'], 'cart');
+		$this->assertEquals(System\Routing\Router::make('GET', 'cart/1', $this->routes)->route()->callback['name'], 'cart');
+		$this->assertEquals(System\Routing\Router::make('GET', 'download', $this->routes)->route()->callback['name'], 'download');
+		$this->assertEquals(System\Routing\Router::make('GET', 'download/1', $this->routes)->route()->callback['name'], 'download');
+		$this->assertEquals(System\Routing\Router::make('GET', 'download/1/a', $this->routes)->route()->callback['name'], 'download');
 	}
 
 	public function testRouterGivesRouteProperOptionalSegmentsWhenTheyArePresent()
 	{
-		$this->assertTrue(is_array(System\Router::make('GET', 'cart', $this->routes)->route()->parameters));
-		$this->assertEquals(count(System\Router::make('GET', 'cart', $this->routes)->route()->parameters), 0);
-		$this->assertEquals(System\Router::make('GET', 'cart/1', $this->routes)->route()->parameters[0], 1);
+		$this->assertTrue(is_array(System\Routing\Router::make('GET', 'cart', $this->routes)->route()->parameters));
+		$this->assertEquals(count(System\Routing\Router::make('GET', 'cart', $this->routes)->route()->parameters), 0);
+		$this->assertEquals(System\Routing\Router::make('GET', 'cart/1', $this->routes)->route()->parameters[0], 1);
 
-		$this->assertEquals(count(System\Router::make('GET', 'download', $this->routes)->route()->parameters), 0);
-		$this->assertEquals(System\Router::make('GET', 'download/1', $this->routes)->route()->parameters[0], 1);
-		$this->assertEquals(count(System\Router::make('GET', 'download/1', $this->routes)->route()->parameters), 1);
+		$this->assertEquals(count(System\Routing\Router::make('GET', 'download', $this->routes)->route()->parameters), 0);
+		$this->assertEquals(System\Routing\Router::make('GET', 'download/1', $this->routes)->route()->parameters[0], 1);
+		$this->assertEquals(count(System\Routing\Router::make('GET', 'download/1', $this->routes)->route()->parameters), 1);
 
-		$this->assertEquals(System\Router::make('GET', 'download/1/a', $this->routes)->route()->parameters[0], 1);
-		$this->assertEquals(System\Router::make('GET', 'download/1/a', $this->routes)->route()->parameters[1], 'a');
-		$this->assertEquals(count(System\Router::make('GET', 'download/1/a', $this->routes)->route()->parameters), 2);
+		$this->assertEquals(System\Routing\Router::make('GET', 'download/1/a', $this->routes)->route()->parameters[0], 1);
+		$this->assertEquals(System\Routing\Router::make('GET', 'download/1/a', $this->routes)->route()->parameters[1], 'a');
+		$this->assertEquals(count(System\Routing\Router::make('GET', 'download/1/a', $this->routes)->route()->parameters), 2);
 	}
 
 	public function testRouterReturnsNullWhenRouteNotFound()
 	{
-		$this->assertNull(System\Router::make('GET', 'user/taylor/taylor/edit', $this->routes)->route());
-		$this->assertNull(System\Router::make('GET', 'user/taylor', $this->routes)->route());
-		$this->assertNull(System\Router::make('GET', 'user/12-3', $this->routes)->route());
-		$this->assertNull(System\Router::make('GET', 'cart/a', $this->routes)->route());
-		$this->assertNull(System\Router::make('GET', 'cart/12-3', $this->routes)->route());
-		$this->assertNull(System\Router::make('GET', 'download/a', $this->routes)->route());
-		$this->assertNull(System\Router::make('GET', 'download/1a', $this->routes)->route());
-		$this->assertNull(System\Router::make('POST', 'user/taylor/25/edit', $this->routes)->route());
+		$this->assertNull(System\Routing\Router::make('GET', 'user/taylor/taylor/edit', $this->routes)->route());
+		$this->assertNull(System\Routing\Router::make('GET', 'user/taylor', $this->routes)->route());
+		$this->assertNull(System\Routing\Router::make('GET', 'user/12-3', $this->routes)->route());
+		$this->assertNull(System\Routing\Router::make('GET', 'cart/a', $this->routes)->route());
+		$this->assertNull(System\Routing\Router::make('GET', 'cart/12-3', $this->routes)->route());
+		$this->assertNull(System\Routing\Router::make('GET', 'download/a', $this->routes)->route());
+		$this->assertNull(System\Routing\Router::make('GET', 'download/1a', $this->routes)->route());
+		$this->assertNull(System\Routing\Router::make('POST', 'user/taylor/25/edit', $this->routes)->route());
 	}
 
 	public function testRouteLoaderShouldReturnSingleRoutesFileWhenNoFolderIsPresent()
 	{
-		$router = new System\Router('GET', 'test');
+		$router = new System\Routing\Router('GET', 'test', require APP_PATH.'routes'.EXT);
 		$this->assertArrayHasKey('GET /', $router->routes);
 	}
 
@@ -117,7 +117,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 	{
 		$this->setupRoutesDirectory();
 
-		$router = new System\Router($method, $uri);
+		$router = new System\Routing\Router($method, $uri, System\Routing\Loader::load($uri));
 		$this->assertArrayHasKey($key, $router->routes);
 	}
 
@@ -130,7 +130,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 		$this->setupRoutesDirectory();
 		$this->setupNestedRouteFiles();
 
-		$router = new System\Router($method, $uri);
+		$router = new System\Routing\Router($method, $uri, System\Routing\Loader::load($uri));
 		$this->assertArrayHasKey($key, $router->routes);
 	}
 
@@ -160,7 +160,7 @@ class RoutingTest extends PHPUnit_Framework_TestCase {
 	{
 		$this->setupRoutesDirectory();
 
-		$router = new System\Router('GET', 'user');
+		$router = new System\Routing\Router('GET', 'user', System\Routing\Loader::load('user'));
 		$this->assertArrayHasKey('GET /', $router->routes);
 	}
 

@@ -4,7 +4,7 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 
 	public function testSimpleRouteCallbackReturnsResponseInstance()
 	{
-		$route = new System\Route('GET /', function() {return 'test';});
+		$route = new System\Routing\Route('GET /', function() {return 'test';});
 
 		$this->assertInstanceOf('System\\Response', $route->call());
 		$this->assertEquals($route->call()->content, 'test');
@@ -12,33 +12,33 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 
 	public function testRouteCallPassesParametersToCallback()
 	{
-		$route = new System\Route('GET /', function($parameter) {return $parameter;}, array('test'));
+		$route = new System\Routing\Route('GET /', function($parameter) {return $parameter;}, array('test'));
 		$this->assertEquals($route->call()->content, 'test');
 
-		$route = new System\Route('GET /', function($parameter1, $parameter2) {return $parameter1.$parameter2;}, array('test1', 'test2'));
+		$route = new System\Routing\Route('GET /', function($parameter1, $parameter2) {return $parameter1.$parameter2;}, array('test1', 'test2'));
 		$this->assertEquals($route->call()->content, 'test1test2');
 	}
 
 	public function testRouteCallWithNullBeforeFilterReturnsRouteResponse()
 	{
-		$route = new System\Route('GET /', array('before' => 'test', 'do' => function() {return 'route';}));
-		System\Route_Filter::$filters = array('test' => function() {return null;});
+		$route = new System\Routing\Route('GET /', array('before' => 'test', 'do' => function() {return 'route';}));
+		System\Routing\Filter::$filters = array('test' => function() {return null;});
 
 		$this->assertEquals($route->call()->content, 'route');
 	}
 
 	public function testRouteCallWithOverridingBeforeFilterReturnsFilterResponse()
 	{
-		$route = new System\Route('GET /', array('before' => 'test', 'do' => function() {return 'route';}));
-		System\Route_Filter::$filters = array('test' => function() {return 'filter';});
+		$route = new System\Routing\Route('GET /', array('before' => 'test', 'do' => function() {return 'route';}));
+		System\Routing\Filter::$filters = array('test' => function() {return 'filter';});
 
 		$this->assertEquals($route->call()->content, 'filter');
 	}
 
 	public function testRouteAfterFilterIsCalled()
 	{
-		$route = new System\Route('GET /', array('after' => 'test', 'do' => function() {return 'route';}));
-		System\Route_Filter::$filters = array('test' => function() {define('LARAVEL_TEST_AFTER_FILTER', 'ran');});
+		$route = new System\Routing\Route('GET /', array('after' => 'test', 'do' => function() {return 'route';}));
+		System\Routing\Filter::$filters = array('test' => function() {define('LARAVEL_TEST_AFTER_FILTER', 'ran');});
 
 		$route->call();
 
@@ -47,8 +47,8 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 
 	public function testRouteAfterFilterDoesNotAffectResponse()
 	{
-		$route = new System\Route('GET /', array('after' => 'test', 'do' => function() {return 'route';}));
-		System\Route_Filter::$filters = array('test' => function() {return 'filter';});
+		$route = new System\Routing\Route('GET /', array('after' => 'test', 'do' => function() {return 'route';}));
+		System\Routing\Filter::$filters = array('test' => function() {return 'filter';});
 
 		$this->assertEquals($route->call()->content, 'route');
 	}

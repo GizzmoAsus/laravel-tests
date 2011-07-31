@@ -6,7 +6,7 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 	{
 		unset($_SERVER['PATH_INFO'], $_SERVER['REQUEST_METHOD']);
 
-		$route = new System\Route(null, null);
+		$route = new System\Routing\Route(null, null);
 		$route->callback = array('name' => 'test', 'do' => function() {});
 
 		System\Request::$route = $route;
@@ -148,7 +148,7 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 
 	public function testRouteIsReturnsFalseWhenNoSuchNamedRouteExists()
 	{
-		$route = new System\Route(null, null);
+		$route = new System\Routing\Route(null, null);
 		$route->callback = function() {};
 
 		System\Request::$route = $route;
