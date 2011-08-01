@@ -26,7 +26,7 @@ class RouterTest extends PHPUnit_Framework_TestCase {
 		);
 
 		// Create a stub of the Route Loader.
-		$this->loader = $this->getMock('System\\Routing\\Loader');
+		$this->loader = $this->getMock('System\\Routing\\Loader', array(), array(APP_PATH));
 		$this->loader->expects($this->any())->method('load')->will($this->returnValue($routes));
 	}
 

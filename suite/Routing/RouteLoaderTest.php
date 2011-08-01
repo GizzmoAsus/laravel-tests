@@ -16,7 +16,7 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	public function testReturnRoutesFileWhenNoDirectory()
 	{
 		// Don't use the stub loader in this test since we just want to mimic the real Laravel base install.
-		$loader = new System\Routing\Loader;
+		$loader = new System\Routing\Loader(APP_PATH);
 		$this->assertArrayHasKey('GET /', $loader->load('test'));
 	}
 
@@ -33,7 +33,7 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 
 	public function routeDirectoryRouteProvider()
 	{
-		$loader = new System\Routing\Loader;
+		$loader = new System\Routing\Loader(APP_PATH);
 
 		return array(
 			array('user', 'GET /user', $loader),
@@ -58,7 +58,7 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	{
 		$routes = $this->routeDirectoryRouteProvider();
 
-		$loader = new System\Routing\Loader;
+		$loader = new System\Routing\Loader(APP_PATH);
 
 		$routes[] = array('user/edit', 'GET /user/edit', $loader);
 		$routes[] = array('admin/panel', 'GET /admin/panel', $loader);
@@ -75,7 +75,7 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	{
 		$this->setupRoutesDirectory();
 
-		$loader = new System\Routing\Loader;
+		$loader = new System\Routing\Loader(APP_PATH);
 		$this->assertArrayHasKey('GET /', $loader->load('user'));
 	}
 
@@ -84,16 +84,16 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testLoadsEverything()
 	{
-		$this->assertArrayHasKey('GET /', System\Routing\Loader::everything(true));
+		$this->assertArrayHasKey('GET /', System\Routing\Loader::all(true));
 
 		$this->setupRoutesDirectory();
-		$this->assertArrayHasKey('GET /', System\Routing\Loader::everything(true));
-		$this->assertArrayHasKey('GET /user', System\Routing\Loader::everything(true));
+		$this->assertArrayHasKey('GET /', System\Routing\Loader::all(true));
+		$this->assertArrayHasKey('GET /user', System\Routing\Loader::all(true));
 
 		$this->setupNestedRouteFiles();
-		$this->assertArrayHasKey('GET /', System\Routing\Loader::everything(true));
-		$this->assertArrayHasKey('GET /user/edit', System\Routing\Loader::everything(true));
-		$this->assertArrayHasKey('GET /user/update/admin', System\Routing\Loader::everything(true));
+		$this->assertArrayHasKey('GET /', System\Routing\Loader::all(true));
+		$this->assertArrayHasKey('GET /user/edit', System\Routing\Loader::all(true));
+		$this->assertArrayHasKey('GET /user/update/admin', System\Routing\Loader::all(true));
 	}
 
 	private function setupRoutesDirectory()
