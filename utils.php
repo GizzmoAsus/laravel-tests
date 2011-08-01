@@ -8,7 +8,7 @@ class Utils {
 	 * @param  string  $directory
 	 * @return void
 	 */
-	public static function rrmdir($directory)
+	public static function remove_directory($directory)
 	{
 		if (is_dir($directory)) 
 		{ 
@@ -18,7 +18,7 @@ class Utils {
 		 	{ 
 		   		if ($object != "." && $object != "..") 
 		   		{ 
-		     		if (filetype($directory."/".$object) == "dir") static::rrmdir($directory."/".$object); else unlink($directory."/".$object); 
+		     		if (filetype($directory."/".$object) == "dir") static::remove_directory($directory."/".$object); else unlink($directory."/".$object); 
 		   		} 
 		 	} 
 

@@ -2,6 +2,9 @@
 
 class RouteFilerTest extends PHPUnit_Framework_TestCase {
 
+	/**
+	 * Setup the test environment.
+	 */
 	public static function setUpBeforeClass()
 	{
 		$filters = array(
@@ -10,15 +13,20 @@ class RouteFilerTest extends PHPUnit_Framework_TestCase {
 			'vars2' => function($var1, $var2) {return $var1.$var2;},
 		);
 
-		System\Routing\Filter::$filters = $filters;
-	}
-
-	public static function tearDownAfterClass()
-	{
-		System\Routing\Filter::$filters = require APP_PATH.'filters'.EXT;
+		System\Routing\Filter::register($filters);
 	}
 
 	/**
+	 * Tear down the test environment.
+	 */
+	public static function tearDownAfterClass()
+	{
+		System\Routing\Filter::register(require APP_PATH.'filters'.EXT);
+	}
+
+	/**
+	 * Calling an undefined filter should throw an exception.
+	 * 
 	 * @expectedException Exception
 	 */
 	public function testCallingUndefinedFilterThrowsException()
@@ -26,16 +34,26 @@ class RouteFilerTest extends PHPUnit_Framework_TestCase {
 		System\Routing\Filter::call('not-found');
 	}
 
-	public function testCallingFilterWithoutOverrideReturnsNull()
+	/**
+	 * Calling a route filter without overriding should return NULL.
+	 */
+	public function testFilterWithoutOverrideReturnsNull()
 	{
 		$this->assertNull(System\Routing\Filter::call('test'));
 	}
 
+	/**
+	 * Calling a route filter with an override should return the result of that filter.
+	 */
 	public function testCallingFilterWithOverrideReturnsResult()
 	{
 		$this->assertEquals(System\Routing\Filter::call('test', array(), true), 'test');
 	}
 
+	/**
+	 * Calling a route filter with parameters should result in the parameters being passed
+	 * to the route filter.
+	 */
 	public function testCallingFilterWithParametersPassesParametersToFilter()
 	{
 		$this->assertEquals(System\Routing\Filter::call('vars', array('test'), true), 'test');
