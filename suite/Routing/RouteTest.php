@@ -53,7 +53,7 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Calling a route with an after filter should return the route response, even if the filter returns a response.
+	 * Calling a route with an after filter should call the after filter.
 	 */
 	public function testRouteAfterFilterIsCalled()
 	{
@@ -63,6 +63,9 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(defined('LARAVEL_TEST_AFTER_FILTER'));
 	}
 
+	/**
+	 * Calling a route with an after filter should not affect the route response.
+	 */
 	public function testRouteAfterFilterDoesNotAffectResponse()
 	{
 		$route = new System\Routing\Route('GET /', array('after' => 'test', 'do' => function() {return 'route';}));
