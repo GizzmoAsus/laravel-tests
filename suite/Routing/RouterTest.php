@@ -31,14 +31,6 @@ class RouterTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Tear down the test environment.
-	 */
-	public function tearDown()
-	{
-		Utils::remove_directory(APP_PATH.'routes');
-	}
-
-	/**
 	 * The router should return null when no matching route is found.
 	 */
 	public function testReturnsNullWhenNotFound()

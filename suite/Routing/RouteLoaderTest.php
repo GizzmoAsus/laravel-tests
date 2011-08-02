@@ -3,11 +3,16 @@
 class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 
 	/**
-	 * Tear down the test environment.
+	 * The path to the fixture routes.
 	 */
-	public function tearDown()
+	public $route_path;
+
+	/**
+	 * Setup the test environment.
+	 */
+	public function setUp()
 	{
-		Utils::remove_directory(APP_PATH.'routes');
+		$this->route_path = FIXTURE_PATH.'routes/';
 	}
 
 	/**
@@ -15,7 +20,6 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testReturnRoutesFileWhenNoDirectory()
 	{
-		// Don't use the stub loader in this test since we just want to mimic the real Laravel base install.
 		$loader = new System\Routing\Loader(APP_PATH);
 		$this->assertArrayHasKey('GET /', $loader->load('test'));
 	}
@@ -25,20 +29,18 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @dataProvider routeDirectoryRouteProvider
 	 */
-	public function testLoadsRouteFilesInRouteDirectoryByURI($uri, $key, $loader)
+	public function testLoadsRouteFilesInRouteDirectoryByURI($uri, $key)
 	{
-		$this->setupRoutesDirectory();
+		$loader = new System\Routing\Loader($this->route_path);
 		$this->assertArrayHasKey($key, $loader->load($uri));
 	}
 
 	public function routeDirectoryRouteProvider()
 	{
-		$loader = new System\Routing\Loader(APP_PATH);
-
 		return array(
-			array('user', 'GET /user', $loader),
-			array('cart', 'GET /cart/edit', $loader),
-			array('cart/edit', 'GET /cart/edit', $loader),
+			array('user', 'GET /user'),
+			array('cart', 'GET /cart/edit'),
+			array('cart/edit', 'GET /cart/edit'),
 		);
 	}
 
@@ -47,10 +49,9 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @dataProvider nestedRouteDirectoryRouteProvider
 	 */
-	public function testLoadsRouteFilesInNestedRouteDirectoryByURI($uri, $key, $loader)
+	public function testLoadsRouteFilesInNestedRouteDirectoryByURI($uri, $key)
 	{
-		$this->setupRoutesDirectory();
-		$this->setupNestedRouteFiles();
+		$loader = new System\Routing\Loader($this->route_path);
 		$this->assertArrayHasKey($key, $loader->load($uri));
 	}
 
@@ -58,11 +59,9 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	{
 		$routes = $this->routeDirectoryRouteProvider();
 
-		$loader = new System\Routing\Loader(APP_PATH);
-
-		$routes[] = array('user/edit', 'GET /user/edit', $loader);
-		$routes[] = array('admin/panel', 'GET /admin/panel', $loader);
-		$routes[] = array('user/update/admin', 'GET /user/update/admin', $loader);
+		$routes[] = array('user/edit', 'GET /user/edit');
+		$routes[] = array('admin/panel', 'GET /admin/panel');
+		$routes[] = array('user/update/admin', 'GET /user/update/admin');
 
 		return $routes;
 	}
@@ -73,9 +72,7 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testLoadsBaseRoutesFileForEveryRequest()
 	{
-		$this->setupRoutesDirectory();
-
-		$loader = new System\Routing\Loader(APP_PATH);
+		$loader = new System\Routing\Loader($this->route_path);
 		$this->assertArrayHasKey('GET /', $loader->load('user'));
 	}
 
@@ -84,16 +81,10 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testLoadsEverything()
 	{
-		$this->assertArrayHasKey('GET /', System\Routing\Loader::all(true));
-
-		$this->setupRoutesDirectory();
-		$this->assertArrayHasKey('GET /', System\Routing\Loader::all(true));
-		$this->assertArrayHasKey('GET /user', System\Routing\Loader::all(true));
-
-		$this->setupNestedRouteFiles();
-		$this->assertArrayHasKey('GET /', System\Routing\Loader::all(true));
-		$this->assertArrayHasKey('GET /user/edit', System\Routing\Loader::all(true));
-		$this->assertArrayHasKey('GET /user/update/admin', System\Routing\Loader::all(true));
+		$this->assertArrayHasKey('GET /', System\Routing\Loader::all(true, $this->route_path));
+		$this->assertArrayHasKey('GET /user', System\Routing\Loader::all(true, $this->route_path));
+		$this->assertArrayHasKey('GET /user/update/admin', System\Routing\Loader::all(true, $this->route_path));
+		
 	}
 
 	private function setupRoutesDirectory()
