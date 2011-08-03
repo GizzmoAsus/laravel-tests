@@ -20,7 +20,7 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testReturnRoutesFileWhenNoDirectory()
 	{
-		$loader = new System\Routing\Loader(APP_PATH);
+		$loader = new System\Routing\Loader(ROUTE_PATH);
 		$this->assertArrayHasKey('GET /', $loader->load('test'));
 	}
 

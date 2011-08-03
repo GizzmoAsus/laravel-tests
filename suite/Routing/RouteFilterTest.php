@@ -21,7 +21,7 @@ class RouteFilerTest extends PHPUnit_Framework_TestCase {
 	 */
 	public static function tearDownAfterClass()
 	{
-		System\Routing\Filter::register(require APP_PATH.'filters'.EXT);
+		System\Routing\Filter::register(require ROUTE_PATH.'filters'.EXT);
 	}
 
 	/**
