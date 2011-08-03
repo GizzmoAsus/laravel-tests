@@ -39,8 +39,10 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	{
 		return array(
 			array('user', 'GET /user'),
+			array('user', 'GET /user/root'),
 			array('cart', 'GET /cart/edit'),
 			array('cart/edit', 'GET /cart/edit'),
+			array('user/root', 'GET /user/root'),
 		);
 	}
 
