@@ -10,11 +10,15 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 		$route->callback = array('name' => 'test', 'do' => function() {});
 
 		System\Request::$route = $route;
+		System\Request::$uri = null;
+		System\Request::$segments = null;
 	}
 
-	public function tearDown()
+	public static function tearDownAfterClass()
 	{
 		System\Request::$route = null;
+		System\Request::$uri = null;
+		System\Request::$segments = null;
 	}
 
 	/**
@@ -22,6 +26,7 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testUriMethodThrowsExceptionWhenCantDetermineUri()
 	{
+		unset($_SERVER['PATH_INFO'], $_SERVER['REQUEST_METHOD']);
 		System\Request::uri();
 	}
 
