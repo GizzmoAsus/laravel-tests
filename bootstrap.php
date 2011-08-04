@@ -44,14 +44,16 @@ define('EXT', '.php');
 // --------------------------------------------------------------
 // Load the classes used by the auto-loader.
 // --------------------------------------------------------------
-require SYS_PATH.'loader'.EXT;
 require SYS_PATH.'config'.EXT;
 require SYS_PATH.'arr'.EXT;
 
 // --------------------------------------------------------------
 // Register the auto-loader.
 // --------------------------------------------------------------
+require SYS_PATH.'loader'.EXT;
+
 spl_autoload_register(array('System\\Loader', 'load'));
+
 System\Loader::bootstrap();
 
 // --------------------------------------------------------------
