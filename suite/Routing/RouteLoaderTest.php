@@ -83,10 +83,12 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testLoadsEverything()
 	{
+		System\Config::set('application.modules', array('auth'));
 		$this->assertArrayHasKey('GET /', System\Routing\Loader::all(true, $this->route_path));
+		$this->assertArrayHasKey('GET /auth', System\Routing\Loader::all(true, $this->route_path));
 		$this->assertArrayHasKey('GET /user', System\Routing\Loader::all(true, $this->route_path));
 		$this->assertArrayHasKey('GET /user/update/admin', System\Routing\Loader::all(true, $this->route_path));
-		
+		Config::set('application.modules', array());
 	}
 
 }

@@ -35,6 +35,7 @@ define('VIEW_PATH', APP_PATH.'views/');
 // Define the fixture path.
 // --------------------------------------------------------------
 define('FIXTURE_PATH', realpath('fixtures').'/');
+define('MODULE_PATH', FIXTURE_PATH.'modules/');
 
 // --------------------------------------------------------------
 // Define the PHP file extension.
