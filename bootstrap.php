@@ -19,16 +19,15 @@ define('SYS_PATH', realpath('../laravel/system').'/');
 // --------------------------------------------------------------
 // Define various other framework paths.
 // --------------------------------------------------------------
-define('CACHE_PATH', APP_PATH.'storage/cache/');
+define('CACHE_PATH', BASE_PATH.'storage/cache/');
 define('CONFIG_PATH', APP_PATH.'config/');
-define('DATABASE_PATH', APP_PATH.'storage/db/');
+define('DATABASE_PATH', BASE_PATH.'storage/db/');
 define('LANG_PATH', APP_PATH.'lang/');
 define('LIBRARY_PATH', APP_PATH.'libraries/');
 define('MODEL_PATH', APP_PATH.'models/');
-define('PACKAGE_PATH', APP_PATH.'packages/');
+define('PACKAGE_PATH', BASE_PATH.'packages/');
 define('ROUTE_PATH', APP_PATH.'routes/');
-define('SESSION_PATH', APP_PATH.'storage/sessions/');
-define('SYS_CONFIG_PATH', SYS_PATH.'config/');
+define('SESSION_PATH', BASE_PATH.'storage/sessions/');
 define('VIEW_PATH', APP_PATH.'views/');
 
 // --------------------------------------------------------------
@@ -45,31 +44,15 @@ define('EXT', '.php');
 // --------------------------------------------------------------
 // Load the classes used by the auto-loader.
 // --------------------------------------------------------------
+require SYS_PATH.'loader'.EXT;
 require SYS_PATH.'config'.EXT;
 require SYS_PATH.'arr'.EXT;
 
 // --------------------------------------------------------------
 // Register the auto-loader.
 // --------------------------------------------------------------
-spl_autoload_register(function($class) 
-{
-	$file = strtolower(str_replace('\\', '/', $class));
-
-	if (array_key_exists($class, $aliases = System\Config::get('aliases')))
-	{
-		return class_alias($aliases[$class], $class);
-	}
-
-	foreach (array(BASE_PATH, MODEL_PATH, LIBRARY_PATH) as $directory)
-	{
-		if (file_exists($path = $directory.$file.EXT))
-		{
-			require $path;
-
-			return;
-		}
-	}
-});
+spl_autoload_register(array('System\\Loader', 'load'));
+System\Loader::bootstrap();
 
 // --------------------------------------------------------------
 // Load the test utilities.
