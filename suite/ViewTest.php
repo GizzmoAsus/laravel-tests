@@ -2,6 +2,16 @@
 
 class ViewTest extends PHPUnit_Framework_TestCase {
 
+	public function setUp()
+	{
+		System\Config::set('application.modules', array('auth'));
+	}
+
+	public function tearDown()
+	{
+		System\Config::set('application.modules', array());
+	}
+
 	public function testConstructorSetsViewNameAndData()
 	{
 		$view = new System\View('home/index', array('name' => 'test'));
@@ -16,6 +26,10 @@ class ViewTest extends PHPUnit_Framework_TestCase {
 	public function testMakeMethodReturnsNewViewInstance()
 	{
 		$this->assertInstanceOf('System\\View', System\View::make('home/index'));
+		$this->assertInstanceOf('System\\View', System\View::make('home.index'));
+		$this->assertInstanceOf('System\\View', System\View::make('auth::home'));
+		$this->assertInstanceOf('System\\View', System\View::make('auth::partials/test'));
+		$this->assertInstanceOf('System\\View', System\View::make('auth::partials.test'));
 	}
 
 	public function testBindMethodAddsItemToViewData()
@@ -38,14 +52,22 @@ class ViewTest extends PHPUnit_Framework_TestCase {
 	public function testPartialMethodPutsAViewInstanceInTheViewData()
 	{
 		$view = System\View::make('home/index')->partial('partial', 'home/index');
-
 		$this->assertInstanceOf('System\\View', $view->partial);
 		$this->assertEquals($view->partial->view, 'home/index');
+
+		$view = System\View::make('home/index')->partial('partial', 'auth::home');
+		$this->assertInstanceOf('System\\View', $view->partial);
+		$this->assertEquals($view->partial->view, 'home');		
 	}
 
 	public function testGetMethodReturnsStringContentOfView()
 	{
 		$this->assertTrue(is_string(System\View::make('home/index')->get()));
+		$this->assertTrue(is_string(System\View::make('auth::home')->get()));
+		$this->assertTrue(is_string(System\View::make('auth::partials.test')->get()));
+
+		$this->assertEquals(System\View::make('auth::home')->get(), 'Auth');
+		$this->assertEquals(System\View::make('auth::partials.test')->get(), 'AuthPartial');
 	}
 
 	/**
