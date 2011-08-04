@@ -29,7 +29,7 @@ class LangTest extends PHPUnit_Framework_TestCase {
 
 	public function testGetMethodMakesReplacements()
 	{
-		Lang::$lines['envalidation']['required'] = ':name :size';
+		Lang::$lines['application']['envalidation']['required'] = ':name :size';
 		$this->assertEquals(Lang::line('validation.required', array('name' => 'test', 'size' => 100, 'foo' => 'bar'))->get(), 'test 100');
 	}
 

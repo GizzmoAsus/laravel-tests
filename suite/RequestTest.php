@@ -39,9 +39,12 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 	public function testUriMethodReturnsSingleSlashOnRequestForRoot($uri)
 	{
 		Config::set('application.url', 'http://example.com');
-		Config::set('appliation.index', '');
-
 		$_SERVER['REQUEST_URI'] = $uri;
+
+		Config::set('application.index', '');
+		$this->assertEquals(System\Request::uri(), '/');
+
+		Config::set('application.index', 'index.php');
 		$this->assertEquals(System\Request::uri(), '/');
 	}
 
@@ -64,7 +67,7 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 	public function testUriMethodReturnsSingleSlashOnRequestForFolderNestedRoot($uri)
 	{
 		Config::set('application.url', 'http://example.com/laravel/public');
-		Config::set('appliation.index', 'index.php');
+		Config::set('application.index', 'index.php');
 
 		$_SERVER['REQUEST_URI'] = $uri;
 		$this->assertEquals(System\Request::uri(), '/');
@@ -93,7 +96,7 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 	public function testUriMethodReturnsSegmentForSingleSegmentUri($uri)
 	{
 		Config::set('application.url', 'http://example.com');
-		Config::set('appliation.index', '');
+		Config::set('application.index', '');
 
 		$_SERVER['REQUEST_URI'] = $uri;
 		$this->assertEquals(System\Request::uri(), 'user');
@@ -114,7 +117,7 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 	public function testUriMethodReturnsSegmentsForMultiSegmentUri($uri)
 	{
 		Config::set('application.url', 'http://example.com');
-		Config::set('appliation.index', '');
+		Config::set('application.index', '');
 
 		$_SERVER['REQUEST_URI'] = $uri;
 		$this->assertEquals(System\Request::uri(), 'user/something');
