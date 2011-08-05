@@ -2,6 +2,11 @@
 
 class ConfigTest extends PHPUnit_Framework_TestCase {
 
+	public static function setUpBeforeClass()
+	{
+		System\Config::$items = array();
+	}
+
 	public function testHasMethodReturnsFalseWhenItemDoesntExist()
 	{
 		$this->assertFalse(Config::has('doesnt'));
