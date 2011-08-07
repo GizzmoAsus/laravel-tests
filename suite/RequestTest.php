@@ -11,14 +11,12 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 
 		System\Request::$route = $route;
 		System\Request::$uri = null;
-		System\Request::$segments = null;
 	}
 
 	public static function tearDownAfterClass()
 	{
 		System\Request::$route = null;
 		System\Request::$uri = null;
-		System\Request::$segments = null;
 	}
 
 	/**

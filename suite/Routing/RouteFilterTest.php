@@ -25,13 +25,12 @@ class RouteFilerTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Calling an undefined filter should throw an exception.
-	 * 
-	 * @expectedException Exception
+	 * Calling an undefined filter should do nothing.
 	 */
-	public function testCallingUndefinedFilterThrowsException()
+	public function testCallingUndefinedFilterDoesNothing()
 	{
 		System\Routing\Filter::call('not-found');
+		$this->assertTrue(true);
 	}
 
 	/**
