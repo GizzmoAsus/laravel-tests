@@ -62,4 +62,12 @@ class URLTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(URL::to_secure_route('wildcard-cart', array('test', 'foo')), 'https://localhost/index.php/cart/test/foo');
 	}
 
+	public function testSlugMethodCreatesURLSlug()
+	{
+		$this->assertEquals(URL::slug('This is my article!!!'), 'this-is-my-article');
+		$this->assertEquals(URL::slug('This is my article <> wow'), 'this-is-my-article-wow');
+		$this->assertEquals(URL::slug('This is my article <> wow\'s'), 'this-is-my-article-wows');
+		$this->assertEquals(URL::slug('Deuxième article'), 'deuxieme-article');
+	}
+
 }
