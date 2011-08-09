@@ -9,7 +9,13 @@ class Utils {
 	 */
 	public static function setup_db()
 	{
-		$connections = array('sqlite' => array('driver' => 'sqlite', 'database' => FIXTURE_PATH.'fixture.sqlite'));
+		$connections = array(
+			'sqlite' => array(
+				'driver'   => 'sqlite',
+				'database' => FIXTURE_PATH.'fixture.sqlite'
+			)
+		);
+
 		System\Config::set('db.connections', $connections);
 	}
 

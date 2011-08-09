@@ -9,9 +9,6 @@ class RouteFinderTest extends PHPUnit_Framework_TestCase {
 	 */
 	private $routes;
 
-	/**
-	 * Setup the test environment.
-	 */
 	public function setUp()
 	{
 		$routes = array();
@@ -22,17 +19,11 @@ class RouteFinderTest extends PHPUnit_Framework_TestCase {
 		$this->routes = $routes;
 	}
 
-	/**
-	 * The route finder should return null when no matching named route is found.
-	 */
 	public function testReturnsNullWhenRouteIsNotFound()
 	{
 		$this->assertNull(System\Routing\Finder::find('doesnt-exist', $this->routes));
 	}
 
-	/**
-	 * The route finder should return the route when a matching named route is found.
-	 */
 	public function testReturnsRouteWhenFound()
 	{
 		$this->assertArrayHasKey('GET /home', System\Routing\Finder::find('home', $this->routes));

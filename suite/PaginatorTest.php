@@ -65,4 +65,10 @@ class PaginatorTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(Paginator::make(array(), 30, 2)->lang('en')->language, 'en');
 	}
 
+	public function testAppendMethodSetsTextToBeAppendedToLinks()
+	{
+		$links = Paginator::make(array(), 30, 2)->append(array('name' => 'test', 'order' => 'desc'))->links();
+		$this->assertTrue(strpos($links, '&amp;name=test&amp;order=desc') !== false);
+	}
+
 }

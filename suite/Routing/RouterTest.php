@@ -9,9 +9,6 @@ class RouterTest extends PHPUnit_Framework_TestCase {
 	 */
 	public $loader;
 
-	/**
-	 * Setup the test environment.
-	 */
 	public function setUp()
 	{
 		// Create an array of variously defined routes to test with.
@@ -30,26 +27,18 @@ class RouterTest extends PHPUnit_Framework_TestCase {
 		$this->loader->expects($this->any())->method('load')->will($this->returnValue($routes));
 	}
 
-	/**
-	 * The router should return null when no matching route is found.
-	 */
 	public function testReturnsNullWhenNotFound()
 	{
 		$this->loader->expects($this->any())->method('load')->will($this->returnValue(array()));
 		$this->assertNull(System\Routing\Router::make('GET', 'test', $this->loader)->route());
 	}
 
-	/**
-	 * The router should be able to handle a request to root.
-	 */
 	public function testRoutesToRoot()
 	{
 		$this->assertEquals(System\Routing\Router::make('GET', '/', $this->loader)->route()->callback['name'], 'root');
 	}
 
 	/**
-	 * The router should be able to route to the proper routes when segments are present.
-	 *
 	 * @dataProvider segmentedRouteProvider
 	 */
 	public function testRoutesWhenSegmentsArePresent($method, $uri, $name)
@@ -67,9 +56,6 @@ class RouterTest extends PHPUnit_Framework_TestCase {
 		);
 	}
 
-	/**
-	 * The router should be able to parse segments into parameters to give to the route.
-	 */
 	public function testParsesSegmentsIntoParameters()
 	{
 		// Test with a single parameter.
@@ -93,9 +79,6 @@ class RouterTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(count(System\Routing\Router::make('GET', 'download/1/a', $this->loader)->route()->parameters), 2);
 	}
 
-	/**
-	 * The router should correctly route when optional segments are present.
-	 */
 	public function testRoutesWhenUsingOptionalSegments()
 	{
 		$this->assertEquals(System\Routing\Router::make('GET', 'cart', $this->loader)->route()->callback['name'], 'cart');

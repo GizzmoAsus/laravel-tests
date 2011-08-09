@@ -2,17 +2,11 @@
 
 class RouteTest extends PHPUnit_Framework_TestCase {
 
-	/**
-	 * Tear down the test environment.
-	 */
 	public function tearDown()
 	{
 		System\Routing\Filter::clear();
 	}
 
-	/**
-	 * Calling a route should always return a Response instance.
-	 */
 	public function testRouteCallbackReturnsResponseInstance()
 	{
 		$route = new System\Routing\Route('GET /', function() {return 'test';});
@@ -20,9 +14,6 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf('System\\Response', $route->call());
 	}
 
-	/**
-	 * Calling a route should result in the route parameters being passed to the route callback.
-	 */
 	public function testRouteCallPassesParametersToCallback()
 	{
 		$route = new System\Routing\Route('GET /', function($parameter) {return $parameter;}, array('test'));
@@ -32,9 +23,6 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($route->call()->content, 'test1 test2');
 	}
 
-	/**
-	 * Calling a route with a null before filter should return the route response.
-	 */
 	public function testNullBeforeFilterReturnsRouteResponse()
 	{
 		System\Routing\Filter::register(array('test' => function() {return null;}));
@@ -42,9 +30,6 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($route->call()->content, 'route');
 	}
 
-	/**
-	 * Calling a route with a before filter that returns a response should return the filter response.
-	 */
 	public function testOverridingBeforeFilterReturnsFilterResponse()
 	{
 		System\Routing\Filter::register(array('test' => function() {return 'filter';}));
@@ -52,9 +37,6 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($route->call()->content, 'filter');
 	}
 
-	/**
-	 * Calling a route with an after filter should call the after filter.
-	 */
 	public function testRouteAfterFilterIsCalled()
 	{
 		$route = new System\Routing\Route('GET /', array('after' => 'test', 'do' => function() {return 'route';}));
@@ -63,9 +45,6 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(defined('LARAVEL_TEST_AFTER_FILTER'));
 	}
 
-	/**
-	 * Calling a route with an after filter should not affect the route response.
-	 */
 	public function testRouteAfterFilterDoesNotAffectResponse()
 	{
 		$route = new System\Routing\Route('GET /', array('after' => 'test', 'do' => function() {return 'route';}));

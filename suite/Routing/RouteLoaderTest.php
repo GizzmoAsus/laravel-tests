@@ -4,20 +4,16 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * The path to the fixture routes.
+	 *
+	 * @var string
 	 */
 	public $route_path;
 
-	/**
-	 * Setup the test environment.
-	 */
 	public function setUp()
 	{
 		$this->route_path = FIXTURE_PATH.'routes/';
 	}
 
-	/**
-	 * The router should load the base routes file when no routes directory is present.
-	 */
 	public function testReturnRoutesFileWhenNoDirectory()
 	{
 		$loader = new System\Routing\Loader(APP_PATH);
@@ -25,8 +21,6 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * The route loader should load routes from a route directory that doesn't have nested routes.
-	 *
 	 * @dataProvider routeDirectoryRouteProvider
 	 */
 	public function testLoadsRouteFilesInRouteDirectoryByURI($uri, $key)
@@ -47,8 +41,6 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * The route loader should load routes from a route directory that does have nested routes.
-	 *
 	 * @dataProvider nestedRouteDirectoryRouteProvider
 	 */
 	public function testLoadsRouteFilesInNestedRouteDirectoryByURI($uri, $key)
@@ -68,20 +60,13 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 		return $routes;
 	}
 
-	/**
-	 * The route loader should load the base routes even when there is a route directory and
-	 * routes from that route directory are being loaded.
-	 */
 	public function testLoadsBaseRoutesFileForEveryRequest()
 	{
 		$loader = new System\Routing\Loader($this->route_path);
 		$this->assertArrayHasKey('GET /', $loader->load('user'));
 	}
 
-	/**
-	 * The route loader should be able to load all routes using the everything method.
-	 */
-	public function testLoadsEverything()
+	public function testLoaderCanLoadEverything()
 	{
 		System\Config::set('application.modules', array('auth'));
 		$this->assertArrayHasKey('GET /', System\Routing\Loader::all(true, $this->route_path));
