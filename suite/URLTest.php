@@ -55,4 +55,11 @@ class URLTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(URL::to_secure('something'), 'https://localhost/index.php/something');
 	}
 
+	public function testToRouteMethodCanCreateURLToRoute()
+	{
+		$this->assertEquals(URL::to_route('edit-cart'), 'http://localhost/index.php/cart/edit');
+		$this->assertEquals(URL::to_route('wildcard-cart', array('test', 'foo'), true), 'https://localhost/index.php/cart/test/foo');
+		$this->assertEquals(URL::to_secure_route('wildcard-cart', array('test', 'foo')), 'https://localhost/index.php/cart/test/foo');
+	}
+
 }
