@@ -70,6 +70,13 @@ class ViewTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(System\View::make('auth::partials.test')->get(), 'AuthPartial');
 	}
 
+	public function testComposerIsCalledWhenItIsDefinedForView()
+	{
+		System\View::$composers['application']['home.index'] = function($view) {$view->bind('name', 'test');};
+		$this->assertEquals(System\View::make('home.index')->name, 'test');
+		System\View::$composers = null;
+	}
+
 	/**
 	 * @expectedException Exception
 	 */
