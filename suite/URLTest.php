@@ -57,9 +57,12 @@ class URLTest extends PHPUnit_Framework_TestCase {
 
 	public function testToRouteMethodCanCreateURLToRoute()
 	{
-		$this->assertEquals(URL::to_route('edit-cart'), 'http://localhost/index.php/cart/edit');
-		$this->assertEquals(URL::to_route('wildcard-cart', array('test', 'foo'), true), 'https://localhost/index.php/cart/test/foo');
-		$this->assertEquals(URL::to_secure_route('wildcard-cart', array('test', 'foo')), 'https://localhost/index.php/cart/test/foo');
+		$this->assertEquals(URL::to_route('edit_cart'), 'http://localhost/index.php/cart/edit');
+		$this->assertEquals(URL::to_edit_cart(), 'http://localhost/index.php/cart/edit');
+		$this->assertEquals(URL::to_route('wildcard_cart', array('test', 'foo'), true), 'https://localhost/index.php/cart/test/foo');
+		$this->assertEquals(URL::to_secure_route('wildcard_cart', array('test', 'foo')), 'https://localhost/index.php/cart/test/foo');
+		$this->assertEquals(URL::to_wildcard_cart(array('test', 'foo')), 'http://localhost/index.php/cart/test/foo');
+		$this->assertEquals(URL::to_secure_wildcard_cart(array('test', 'foo')), 'https://localhost/index.php/cart/test/foo');
 	}
 
 	public function testSlugMethodCreatesURLSlug()
