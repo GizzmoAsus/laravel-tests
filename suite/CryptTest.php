@@ -18,4 +18,13 @@ class CryptTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(Crypt::decrypt(Crypt::encrypt('test')), 'test');
 	}
 
+	/**
+	 * @expectedException Exception
+	 */
+	public function testExceptionIsThrownWhenTryingToCryptWithoutKey()
+	{
+		Config::set('application.key', '');
+		Crypt::encrypt('test');
+	}
+
 }
