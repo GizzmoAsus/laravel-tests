@@ -77,6 +77,21 @@ class ViewTest extends PHPUnit_Framework_TestCase {
 		System\View::$composers = null;
 	}
 
+	public function testViewCanBeCreatedByName()
+	{
+		define('ACTIVE_MODULE', 'application');
+		$this->assertInstanceOf('System\\View', System\View::of_home());
+	}
+
+	/**
+	 * @expectedException Exception
+	 */
+	public function testAttemptingToCreateUndefinedNamedViewThrowsException()
+	{
+		define('ACTIVE_MODULE', 'application');
+		System\View::of_something();
+	}
+
 	/**
 	 * @expectedException Exception
 	 */
