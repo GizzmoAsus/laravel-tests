@@ -42,6 +42,11 @@ define('MODULE_PATH', FIXTURE_PATH.'modules/');
 define('EXT', '.php');
 
 // --------------------------------------------------------------
+// Define the active module.
+// --------------------------------------------------------------
+define('ACTIVE_MODULE', 'application');
+
+// --------------------------------------------------------------
 // Load the classes used by the auto-loader.
 // --------------------------------------------------------------
 require SYS_PATH.'config'.EXT;

@@ -79,7 +79,6 @@ class ViewTest extends PHPUnit_Framework_TestCase {
 
 	public function testViewCanBeCreatedByName()
 	{
-		define('ACTIVE_MODULE', 'application');
 		$this->assertInstanceOf('System\\View', System\View::of_home());
 	}
 
@@ -88,7 +87,6 @@ class ViewTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testAttemptingToCreateUndefinedNamedViewThrowsException()
 	{
-		define('ACTIVE_MODULE', 'application');
 		System\View::of_something();
 	}
 
