@@ -7,6 +7,11 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
 		System\Config::$items = array();
 	}
 
+	public static function tearDownAfterClass()
+	{
+		System\Config::$items = array();
+	}
+
 	public function testHasMethodReturnsFalseWhenItemDoesntExist()
 	{
 		$this->assertFalse(Config::has('doesnt'));
@@ -60,20 +65,18 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
 		Config::$items = require CONFIG_PATH.'application'.EXT;
 	}
 
+	public function testSetMethodCanSetEntireArray()
+	{
+		Config::set('application', array('name' => 'test'));
+		$this->assertEquals(Config::get('application'), array('name' => 'test'));
+	}
+
 	/**
 	 * @expectedException Exception
 	 */
 	public function testSetMethodThrowsExceptionIfFileDoesntExist()
 	{
 		Config::set('auth::something.something', 'test');
-	}
-
-	/**
-	 * @expectedException Exception
-	 */
-	public function testSetMethodThrowsExceptionIfTryingToSetEntireArray()
-	{
-		Config::set('auth::test', array('test' => 'test'));
 	}
 
 }
