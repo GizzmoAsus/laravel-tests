@@ -14,8 +14,7 @@ class CryptTest extends PHPUnit_Framework_TestCase {
 
 	public function testEncryptedValueCanBeDecryptedToOriginalValue()
 	{
-		define('MCRYPT_RAND', 'foo');
-		$this->assertEquals(Crypt::decrypt(Crypt::encrypt('test')), 'test');
+		$this->assertEquals(Crypter::make()->decrypt(Crypter::make()->encrypt('test')), 'test');
 	}
 
 	/**
@@ -24,7 +23,7 @@ class CryptTest extends PHPUnit_Framework_TestCase {
 	public function testExceptionIsThrownWhenTryingToCryptWithoutKey()
 	{
 		Config::set('application.key', '');
-		Crypt::encrypt('test');
+		Crypter::make()->encrypt('test');
 	}
 
 }
