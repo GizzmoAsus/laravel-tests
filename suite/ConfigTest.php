@@ -71,12 +71,4 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(Config::get('application'), array('name' => 'test'));
 	}
 
-	/**
-	 * @expectedException Exception
-	 */
-	public function testSetMethodThrowsExceptionIfFileDoesntExist()
-	{
-		Config::set('auth::something.something', 'test');
-	}
-
 }
