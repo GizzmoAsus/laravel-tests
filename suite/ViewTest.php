@@ -82,20 +82,4 @@ class ViewTest extends PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf('System\\View', System\View::of_home());
 	}
 
-	/**
-	 * @expectedException Exception
-	 */
-	public function testAttemptingToCreateUndefinedNamedViewThrowsException()
-	{
-		System\View::of_something();
-	}
-
-	/**
-	 * @expectedException Exception
-	 */
-	public function testExceptionIsThrownWhenViewDoesntExist()
-	{
-		System\View::make('doesnt-exist')->get();
-	}
-
 }

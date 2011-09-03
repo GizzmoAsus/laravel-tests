@@ -2,6 +2,11 @@
 
 class RedirectTest extends PHPUnit_Framework_TestCase {
 
+	public function setUp()
+	{
+		Config::$items = array();
+	}
+
 	public function testCreationSetsResponseVariable()
 	{
 		$redirect = new Redirect('test');
