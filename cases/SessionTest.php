@@ -2,7 +2,7 @@
 
 use Laravel\IoC;
 use Laravel\Config;
-use Laravel\Session;
+use Laravel\Session\Manager as Session;
 
 class SessionTest extends PHPUnit_Framework_TestCase {
 
