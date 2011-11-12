@@ -5,6 +5,11 @@ use Laravel\Routing\Controller;
 
 class ControllerTest extends PHPUnit_Framework_TestCase {
 
+	public static function setUpBeforeClass()
+	{
+		require_once SYS_PATH.'routing/filter'.EXT;
+	}
+
 	public function test_basic_call_can_execute_controller_method()
 	{
 		$response = Controller::call('blog@index');

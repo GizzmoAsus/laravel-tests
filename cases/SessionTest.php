@@ -2,7 +2,7 @@
 
 use Laravel\IoC;
 use Laravel\Config;
-use Laravel\Session\Manager as Session;
+use Laravel\Session\Payload as Session;
 
 class SessionTest extends PHPUnit_Framework_TestCase {
 
@@ -185,35 +185,49 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$session->flash('name', 'Taylor');
 
-		$this->assertEquals($session->session['data'][':new:name'], 'Taylor');
+		$this->assertEquals($session->session['data'][':new:']['name'], 'Taylor');
 	}
 
 	public function test_reflash_keeps_all_session_data()
 	{
 		$session = $this->getDummySession();
-		$session->session = array('data' => array(':old:name' => 'Taylor', ':old:age' => 25));
+
+		$session->session = array('data' => array(
+			':old:' => array(
+				'name' => 'Taylor',
+				'age' => 25,
+			),
+			':new:' => array(),
+		));
 
 		$session->reflash();
 
-		$this->assertTrue(isset($session->session['data'][':new:name']));
-		$this->assertTrue(isset($session->session['data'][':new:age']));
+		$this->assertTrue(isset($session->session['data'][':new:']['name']));
+		$this->assertTrue(isset($session->session['data'][':new:']['age']));
 	}
 
 	public function test_keep_method_keeps_specified_session_data()
 	{
 		$session = $this->getDummySession();
-		$session->session = array('data' => array(':old:name' => 'Taylor', ':old:age' => 25));
+
+		$session->session = array('data' => array(':old:' => array(
+			'name' => 'Taylor',
+			'age' => 25,
+		)));
 
 		$session->keep('name');
 
-		$this->assertTrue(isset($session->session['data'][':new:name']));
+		$this->assertTrue(isset($session->session['data'][':new:']['name']));
 		
-		$session->session = array('data' => array(':old:name' => 'Taylor', ':old:age' => 25));
+		$session->session = array('data' => array(':old:' => array(
+			'name' => 'Taylor',
+			'age' => 25,
+		)));
 
 		$session->keep(array('name', 'age'));
 
-		$this->assertTrue(isset($session->session['data'][':new:name']));
-		$this->assertTrue(isset($session->session['data'][':new:age']));
+		$this->assertTrue(isset($session->session['data'][':new:']['name']));
+		$this->assertTrue(isset($session->session['data'][':new:']['age']));
 	}
 
 	public function test_flush_method_clears_payload_data()
@@ -255,8 +269,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$session->save($this->getMockDriver());
 
-		$this->assertTrue(isset($session->session['data'][':old:age']));
-		$this->assertFalse(isset($session->session['data'][':old:gender']));
+		$this->assertTrue(isset($session->session['data'][':old:']['age']));
+		$this->assertFalse(isset($session->session['data'][':old:']['gender']));
 	}
 
 	// ---------------------------------------------------------------------
@@ -274,8 +288,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 	{
 		return array('id' => 'something', 'last_activity' => time(), 'data' => array(
 				'name'        => 'Taylor',
-				':new:age'    => 25,
-				':old:gender' => 'male',
+				':new:'       => array('age' => 25),
+				':old:'       => array('gender' => 'male'),
 				'state'       => 'Oregon',
 				'csrf_token'  => 'token',
 		));

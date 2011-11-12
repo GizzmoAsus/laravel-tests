@@ -193,7 +193,7 @@ class View {
 	 */
 	protected static function composers()
 	{
-		static::$composers = IoC::container()->core('view.composers');
+		static::$composers = require APP_PATH.'composers'.EXT;
 	}
 
 	/**
@@ -322,6 +322,16 @@ class View {
 	public function __unset($key)
 	{
 		unset($this->data[$key]);
+	}
+
+	/**
+	 * Get the evaluated string content of the view.
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->render();
 	}
 
 	/**

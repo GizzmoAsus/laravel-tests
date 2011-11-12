@@ -8,16 +8,89 @@
 require 'bootstrap/core.php';
 
 /**
- * Register the framework error handling methods and set the
- * error_reporting levels. This file will register handlers
- * for exceptions, errors, and shutdown.
- */
-require SYS_PATH.'bootstrap/errors'.EXT;
-
-/**
- * Set the application's default timezone.
+ * Register the default timezone for the application. This will be
+ * the default timezone used by all date / timezone functions in
+ * the entire application.
  */
 date_default_timezone_set(Config::$items['application']['timezone']);
+
+/**
+ * Create the exception handler function. All of the error handlers
+ * registered by the framework call this closure to avoid duplicate
+ * code. This Closure will determine if the logging Closure should
+ * be called, and will pass the exception to the developer defined
+ * handler in the configuration file.
+ */
+$handler = function($exception)
+{
+	$config = Config::get('error');
+
+	if ($config['log'])
+	{
+		call_user_func($config['logger'], $exception, $config);
+	}
+
+	call_user_func($config['handler'], $exception, $config);
+
+	if ( ! $config['detail'])
+	{
+		exit(1);
+	}
+};
+
+/**
+ * Register the PHP exception handler. The framework throws exceptions
+ * on every error that cannot be handled. All of those exceptions will
+ * be sent through this closure for processing.
+ */
+set_exception_handler(function($exception) use ($handler)
+{
+	$handler($exception); 
+});
+
+/**
+ * Register the PHP error handler. All PHP errors will fall into this
+ * handler, which will convert the error into an ErrorException object
+ * and pass the exception into the common exception handler.
+ */
+set_error_handler(function($number, $error, $file, $line) use ($handler)
+{
+	$handler(new \ErrorException($error, $number, 0, $file, $line));
+});
+
+/**
+ * Register the PHP shutdown handler. This function will be called
+ * at the end of the PHP script or on a fatal PHP error. If an error
+ * has occured, we will convert it to an ErrorException and pass it
+ * to the common exception handler for the framework.
+ */
+register_shutdown_function(function() use ($handler)
+{
+	if ( ! is_null($error = error_get_last()))
+	{
+		extract($error, EXTR_SKIP);
+
+		$handler(new \ErrorException($message, $type, 0, $file, $line));
+	}	
+});
+
+/**
+ * Setting the PHP error reporting level to -1 essentially forces
+ * PHP to report every error, and is guranteed to show every error
+ * on future versions of PHP.
+ */
+error_reporting(-1);
+
+/**
+ * If error detail is turned off, we will turn off all PHP error
+ * reporting and display since the framework will be displaying a
+ * generic message and we don't want any sensitive details about
+ * the exception leaking into the views.
+ */
+if ( ! Config::$items['error']['detail'])
+{
+	ini_set('display_errors', 'Off');	
+}
 
 /**
  * Load the session and session manager instance. The session
@@ -26,16 +99,22 @@ date_default_timezone_set(Config::$items['application']['timezone']);
  */
 if (Config::$items['session']['driver'] !== '')
 {
-	$driver = IoC::container()->core('session.'.Config::$items['session']['driver']);
+	require SYS_PATH.'ioc'.EXT;
+	require SYS_PATH.'session/payload'.EXT;
+	require SYS_PATH.'session/drivers/driver'.EXT;
+	require SYS_PATH.'session/drivers/factory'.EXT;
 
 	$id = Cookie::get(Config::$items['session']['cookie']);
 
-	IoC::container()->instance('laravel.session', new Session\Manager($driver, $id));
+	$driver = Session\Drivers\Factory::make(Config::$items['session']['driver']);
+
+	IoC::instance('laravel.session', new Session\Payload($driver, $id));
 }
 
 /**
- * Manually load some core classes that are used on every request
- * This allows to avoid using the loader for these classes.
+ * Manually load some core classes that are used on every request so
+ * we can avoid using the loader for these classes. This saves us
+ * some overhead on each request.
  */
 require SYS_PATH.'input'.EXT;
 require SYS_PATH.'request'.EXT;
@@ -46,9 +125,9 @@ require SYS_PATH.'routing/loader'.EXT;
 require SYS_PATH.'routing/filter'.EXT;
 
 /**
- * Gather the input to the application for the current request.
- * The input will be gathered based on the current request method
- * and will be set on the Input manager.
+ * Gather the input to the application based on the current request.
+ * The input will be gathered based on the current request method and
+ * will be set on the Input manager.
  */
 $input = array();
 
@@ -75,8 +154,10 @@ switch (Request::method())
 }
 
 /**
- * The spoofed request method is removed from the input so it is
- * not unexpectedly included in Input::all() or Input::get().
+ * The spoofed request method is removed from the input so it is not
+ * unexpectedly included in Input::all() or Input::get(). Leaving it
+ * in the input array could cause unexpected results if the developer
+ * fills an Eloquent model with the input.
  */
 unset($input[Request::spoofer]);
 
@@ -92,7 +173,11 @@ Routing\Filter::register(require APP_PATH.'filters'.EXT);
 
 list($uri, $method) = array(Request::uri(), Request::method());
 
-Request::$route = IoC::container()->core('routing.router')->route($method, $uri);
+$loader = new Routing\Loader(APP_PATH, ROUTE_PATH);
+
+$router = new Routing\Router($loader, CONTROLLER_PATH);
+
+Request::$route = $router->route($method, $uri);
 
 if ( ! is_null(Request::$route))
 {
@@ -119,10 +204,7 @@ $response->content = $response->render();
  */
 if (Config::$items['session']['driver'] !== '')
 {
-	IoC::container()->core('session')->save($driver);
+	IoC::core('session')->save($driver);
 }
 
-/**
- * Finally, we can send the response to the browser.
- */
 $response->send();

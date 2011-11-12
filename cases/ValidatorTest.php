@@ -1,7 +1,7 @@
 <?php
 
 use Laravel\Lang;
-use Laravel\Validation\Validator;
+use Laravel\Validator;
 
 class ValidatorTest extends PHPUnit_Framework_TestCase {
 
