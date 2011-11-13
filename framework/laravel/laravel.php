@@ -32,9 +32,15 @@ $handler = function($exception)
 
 	call_user_func($config['handler'], $exception, $config);
 
-	if ( ! $config['detail'])
+	if ($config['detail'])
 	{
-		exit(1);
+		echo "<html><h2>Uncaught Exception</h2>
+			  <h3>Message:</h3>
+			  <pre>".$exception->getMessage()."</pre>
+			  <h3>Location:</h3>
+			  <pre>".$exception->getFile()." on line ".$exception->getLine()."</pre>
+			  <h3>Stack Trace:</h3>
+			  <pre>".$exception->getTraceAsString()."</pre></html>";
 	}
 };
 
@@ -176,6 +182,8 @@ list($uri, $method) = array(Request::uri(), Request::method());
 $loader = new Routing\Loader(APP_PATH, ROUTE_PATH);
 
 $router = new Routing\Router($loader, CONTROLLER_PATH);
+
+IoC::instance('laravel.routing.router', $router);
 
 Request::$route = $router->route($method, $uri);
 
