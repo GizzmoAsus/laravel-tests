@@ -23,70 +23,70 @@ class RouterTest extends PHPUnit_Framework_TestCase {
 	{
 		$route = $this->router->route('GET', '/');
 
-		$this->assertTrue($route instanceof Route);
-		$this->assertEquals($route->key, 'GET /');
+		$this->assertInstanceOf('Laravel\Routing\Route', $route);
+		$this->assertEquals('GET /', $route->key);
 
 		$route = $this->router->route('GET', 'root');
 
-		$this->assertTrue($route instanceof Route);
-		$this->assertEquals($route->key, 'GET /root');
+		$this->assertInstanceOf('Laravel\Routing\Route', $route);
+		$this->assertEquals('GET /root', $route->key);
 	}
 
 	public function test_router_can_route_to_nested_routes()
 	{
 		$route = $this->router->route('GET', 'user');
 
-		$this->assertTrue($route instanceof Route);
-		$this->assertEquals($route->key, 'GET /user');
+		$this->assertInstanceOf('Laravel\Routing\Route', $route);
+		$this->assertEquals('GET /user', $route->key);
 
 		$route = $this->router->route('GET', 'user/login');
 
-		$this->assertTrue($route instanceof Route);
-		$this->assertEquals($route->key, 'GET /user/login');
+		$this->assertInstanceOf('Laravel\Routing\Route', $route);
+		$this->assertEquals('GET /user/login', $route->key);
 	}
 
 	public function test_router_can_route_to_deep_nested_route()
 	{
 		$route = $this->router->route('GET', 'admin/panel');
 
-		$this->assertTrue($route instanceof Route);
-		$this->assertEquals($route->key, 'GET /admin/panel');
+		$this->assertInstanceOf('Laravel\Routing\Route', $route);
+		$this->assertEquals('GET /admin/panel', $route->key);
 	}
 
 	public function test_router_sets_proper_parameters_on_route()
 	{
 		$route = $this->router->route('GET', 'user/profile/taylor');
 
-		$this->assertTrue($route instanceof Route);
-		$this->assertEquals($route->parameters, array('taylor'));
+		$this->assertInstanceOf('Laravel\Routing\Route', $route);
+		$this->assertEquals(array('taylor'), $route->parameters);
 	}
 
 	public function test_router_respects_wildcards()
 	{
 		$this->assertNull($this->router->route('GET', 'user/profile/@#)@)'));
-		$this->assertTrue($this->router->route('GET', 'user/profile/taylor_otwell') instanceof Route);
+		$this->assertInstanceOf('Laravel\Routing\Route', $this->router->route('GET', 'user/profile/taylor_otwell'));
 		$this->assertNull($this->router->route('GET', 'user/id/taylor'));
-		$this->assertTrue($this->router->route('GET', 'user/id/1') instanceof Route);
+		$this->assertInstanceOf('Laravel\Routing\Route', $this->router->route('GET', 'user/id/1'));
 		$this->assertNull($this->router->route('GET', 'user/name/taylor/otwell'));
-		$this->assertTrue($this->router->route('GET', 'user/name/taylor/1') instanceof Route);
-		$this->assertTrue($this->router->route('GET', 'user/year/2011') instanceof Route);
+		$this->assertInstanceOf('Laravel\Routing\Route', $this->router->route('GET', 'user/name/taylor/1'));
+		$this->assertInstanceOf('Laravel\Routing\Route', $this->router->route('GET', 'user/year/2011'));
 		$this->assertNull($this->router->route('GET', 'user/year/taylor'));
 	}
 
 	public function test_router_sets_optional_wildcards()
 	{
-		$this->assertEquals($this->router->route('GET', 'user/year')->parameters, array());
-		$this->assertEquals($this->router->route('GET', 'user/year/2020')->parameters, array(2020));
+		$this->assertEquals(array(), $this->router->route('GET', 'user/year')->parameters);
+		$this->assertEquals(array(2020), $this->router->route('GET', 'user/year/2020')->parameters);
 	}
 
 	public function test_router_generates_appropriate_adhoc_route_for_controller()
 	{
 		$route = $this->router->route('GET', 'blog/something/taylor');
 
-		$this->assertTrue($route instanceof Route);
-		$this->assertEquals($route->key, 'GET /blog/something/taylor');
-		$this->assertEquals($route->callback, 'blog@something');
-		$this->assertEquals($route->parameters, array('taylor'));
+		$this->assertInstanceOf('Laravel\Routing\Route', $route);
+		$this->assertEquals('GET /blog/something/taylor', $route->key);
+		$this->assertEquals('blog@something', $route->callback);
+		$this->assertEquals(array('taylor'), $route->parameters);
 	}
 
 	public function test_router_returns_null_when_no_route_is_found()

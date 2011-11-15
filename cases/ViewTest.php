@@ -6,7 +6,7 @@ class ViewTest extends PHPUnit_Framework_TestCase {
 	{
 		$view = View::make('test.basic');
 
-		$this->assertTrue($view instanceof Laravel\View);
+		$this->assertInstanceOf('Laravel\View', $view);
 	}
 
 	public function test_data_can_be_bound_to_view()
@@ -22,7 +22,7 @@ class ViewTest extends PHPUnit_Framework_TestCase {
 
 	public function test_views_can_be_created_by_name()
 	{
-		$this->assertTrue(View::of_home() instanceof Laravel\View);
+		$this->assertInstanceOf('Laravel\View', View::of_home());
 	}
 
 	public function test_basic_view_can_be_rendered()

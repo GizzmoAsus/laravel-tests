@@ -36,7 +36,7 @@ class ControllerTest extends PHPUnit_Framework_TestCase {
 
 		$controller = Controller::resolve('filter.basic');
 
-		$this->assertEquals($controller->execute('before')->content, 'Filtered!');
+		$this->assertEquals('Filtered!', $controller->execute('before')->content);
 	}
 
 	public function test_after_filters_on_controller_are_called()
@@ -92,7 +92,7 @@ class ControllerTest extends PHPUnit_Framework_TestCase {
 
 	public function test_parameters_are_passed_to_controller_method()
 	{
-		$this->assertEquals(Controller::call('blog@post', array(25))->content, 'post|25');
+		$this->assertEquals('post|25', Controller::call('blog@post', array(25))->content);
 	}
 
 	public function test_resolve_method_can_resolve_controller_out_of_ioc_container()
@@ -102,19 +102,19 @@ class ControllerTest extends PHPUnit_Framework_TestCase {
 			return new Ioc_Controller;
 		});
 
-		$this->assertTrue(Controller::resolve('ioc') instanceof Ioc_Controller);
+		$this->assertInstanceOf('IoC_Controller', Controller::resolve('ioc'));
 	}
 
 	public function test_dynamically_accessing_properties_retrieves_from_ioc_container()
 	{
 		Laravel\IoC::register('mailer', function() {return 'SwiftMailer';});
 
-		$this->assertEquals(Controller::resolve('blog')->mailer, 'SwiftMailer');
+		$this->assertEquals('SwiftMailer', Controller::resolve('blog')->mailer);
 	}
 
 	public function test_call_to_non_existent_controller_returns_404()
 	{
-		$this->assertEquals(Controller::call('doesnt@exist')->status, 404);
+		$this->assertEquals(404, Controller::call('doesnt@exist')->status);
 	}
 
 }

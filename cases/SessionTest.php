@@ -42,7 +42,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$session = new Session($driver, 'test');
 
-		$this->assertEquals($session->session, $this->getDummyData());
+		$this->assertEquals($this->getDummyData(), $session->session);
 	}
 
 	/**
@@ -54,8 +54,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$session = new Session($driver, 'test');
 
-		$this->assertTrue(is_array($session->session['data']));
-		$this->assertEquals(strlen($session->session['id']), 40);
+		$this->assertInternalType('array', $session->session['data']);
+		$this->assertEquals(40, strlen($session->session['id']));
 	}
 
 	/**
@@ -69,7 +69,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$session = new Session($driver, 'test');
 
-		$this->assertEquals(strlen($session->session['id']), 40);
+		$this->assertEquals(40, strlen($session->session['id']));
 	}
 
 	/**
@@ -84,8 +84,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$session = new Session($driver, 'test');
 
-		$this->assertTrue(isset($session->session['data']['csrf_token']));
-		$this->assertEquals(strlen($session->session['data']['csrf_token']), 40);
+		$this->assertArrayHasKey('csrf_token', $session->session['data']);
+		$this->assertEquals(40, strlen($session->session['data']['csrf_token']));
 	}
 
 	/**
@@ -153,9 +153,9 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 	{
 		$session = $this->getDummySession();
 
-		$this->assertEquals($session->get('name'), 'Taylor');
-		$this->assertEquals($session->get('age'), 25);
-		$this->assertEquals($session->get('gender'), 'male');
+		$this->assertEquals('Taylor', $session->get('name'));
+		$this->assertEquals(25, $session->get('age'));
+		$this->assertEquals('male', $session->get('gender'));
 	}
 
 	public function test_get_method_returns_default_when_item_doesnt_exist()
@@ -174,8 +174,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 		$session->put('name', 'Weldon');
 		$session->put('workmate', 'Joe');
 
-		$this->assertEquals($session->session['data']['name'], 'Weldon');
-		$this->assertEquals($session->session['data']['workmate'], 'Joe');
+		$this->assertEquals('Weldon', $session->session['data']['name']);
+		$this->assertEquals('Joe', $session->session['data']['workmate']);
 	}
 
 	public function test_flash_method_puts_item_in_flash_data()
@@ -185,7 +185,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$session->flash('name', 'Taylor');
 
-		$this->assertEquals($session->session['data'][':new:']['name'], 'Taylor');
+		$this->assertEquals('Taylor', $session->session['data'][':new:']['name']);
 	}
 
 	public function test_reflash_keeps_all_session_data()
@@ -202,8 +202,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$session->reflash();
 
-		$this->assertTrue(isset($session->session['data'][':new:']['name']));
-		$this->assertTrue(isset($session->session['data'][':new:']['age']));
+		$this->assertArrayHasKey('name', $session->session['data'][':new:']);
+		$this->assertArrayHasKey('age', $session->session['data'][':new:']);
 	}
 
 	public function test_keep_method_keeps_specified_session_data()
@@ -217,7 +217,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$session->keep('name');
 
-		$this->assertTrue(isset($session->session['data'][':new:']['name']));
+		$this->assertArrayHasKey('name', $session->session['data'][':new:']);
 		
 		$session->session = array('data' => array(':old:' => array(
 			'name' => 'Taylor',
@@ -226,8 +226,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$session->keep(array('name', 'age'));
 
-		$this->assertTrue(isset($session->session['data'][':new:']['name']));
-		$this->assertTrue(isset($session->session['data'][':new:']['age']));
+		$this->assertArrayHasKey('name', $session->session['data'][':new:']);
+		$this->assertArrayHasKey('age', $session->session['data'][':new:']);
 	}
 
 	public function test_flush_method_clears_payload_data()
@@ -237,7 +237,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$session->flush();
 
-		$this->assertEquals(count($session->session['data']), 0);
+		$this->assertCount(0, $session->session['data']);
 	}
 
 	public function test_regenerate_session_sets_new_session_id()
@@ -247,7 +247,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$session->regenerate();
 
-		$this->assertEquals(strlen($session->session['id']), 40);
+		$this->assertEquals(40, strlen($session->session['id']));
 	}
 
 	public function test_save_method_sets_last_activity_time()
@@ -260,7 +260,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 		$session->session = $data;
 		$session->save($this->getMockDriver());
 
-		$this->assertTrue(isset($session->session['last_activity']));
+		$this->assertArrayHasKey('last_activity', $session->session);
 	}
 
 	public function test_save_method_ages_all_flash_data()
@@ -269,8 +269,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$session->save($this->getMockDriver());
 
-		$this->assertTrue(isset($session->session['data'][':old:']['age']));
-		$this->assertFalse(isset($session->session['data'][':old:']['gender']));
+		$this->assertArrayHasKey('age', $session->session['data'][':old:']);
+		$this->assertArrayNotHasKey('gender', $session->session['data'][':old:']);
 	}
 
 	// ---------------------------------------------------------------------
