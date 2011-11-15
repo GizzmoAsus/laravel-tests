@@ -29,10 +29,10 @@ class ValidatorTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($validator->errors->has('name'));
 		$this->assertTrue($validator->errors->has('email'));
 		$this->assertFalse($validator->errors->has('password'));
-		$this->assertEquals(count($validator->errors->get('name')), 1);
-		$this->assertEquals($validator->errors->first('name'), 'The name must be alphabetic!');
-		$this->assertEquals($validator->errors->first('email'), Lang::line('validation.email', array('attribute' => 'email'))->get());
-		$this->assertEquals($validator->errors->first('age'), Lang::line('validation.required', array('attribute' => 'age'))->get());
+		$this->assertCount(1, $validator->errors->get('name'));
+		$this->assertEquals('The name must be alphabetic!', $validator->errors->first('name'));
+		$this->assertEquals(Lang::line('validation.email', array('attribute' => 'email'))->get(), $validator->errors->first('email'));
+		$this->assertEquals(Lang::line('validation.required', array('attribute' => 'age'))->get(), $validator->errors->first('age'));
 	}
 
 	public function test_size_rules_return_correct_error_message()
@@ -52,13 +52,13 @@ class ValidatorTest extends PHPUnit_Framework_TestCase {
 		$language = require LANG_PATH.'en/validation.php';
 
 		$name = str_replace(array(':attribute', ':min'), array('name', '6'), $language['min']['string']);
-		$this->assertEquals($validator->errors->first('name'), $name);
+		$this->assertEquals($name, $validator->errors->first('name'));
 
 		$age = str_replace(array(':attribute', ':min', ':max'), array('age', '10', '20'), $language['between']['numeric']);
-		$this->assertEquals($validator->errors->first('age'), $age);
+		$this->assertEquals($age, $validator->errors->first('age'));
 
 		$name = str_replace(array(':attribute', ':min'), array('validator photo', '100'), $language['min']['file']);
-		$this->assertEquals($validator->errors->first('validator_photo'), $name);
+		$this->assertEquals($name, $validator->errors->first('validator_photo'));
 	}
 
 }

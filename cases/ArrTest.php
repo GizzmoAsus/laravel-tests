@@ -7,8 +7,8 @@ class ArrTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function test_get_method_returns_item_from_array($array)
 	{
-		$this->assertEquals(Arr::get($array, 'email'), $array['email']);
-		$this->assertEquals(Arr::get($array, 'names.uncle'), $array['names']['uncle']);
+		$this->assertEquals($array['email'], Arr::get($array, 'email'));
+		$this->assertEquals($array['names']['uncle'], Arr::get($array, 'names.uncle'));
 	}
 
 	/**
@@ -17,8 +17,8 @@ class ArrTest extends PHPUnit_Framework_TestCase {
 	public function test_get_method_returns_default_when_item_doesnt_exist($array)
 	{
 		$this->assertNull(Arr::get($array, 'names.aunt'));
-		$this->assertEquals(Arr::get($array, 'names.aunt', 'Tammy'), 'Tammy');
-		$this->assertEquals(Arr::get($array, 'names.aunt', function() {return 'Tammy';}), 'Tammy');
+		$this->assertEquals('Tammy', Arr::get($array, 'names.aunt', 'Tammy'));
+		$this->assertEquals('Tammy', Arr::get($array, 'names.aunt', function() {return 'Tammy';}));
 	}
 
 	/**
@@ -29,9 +29,9 @@ class ArrTest extends PHPUnit_Framework_TestCase {
 		Arr::set($array, 'name', 'Taylor');
 		Arr::set($array, 'names.aunt', 'Tammy');
 		Arr::set($array, 'names.friends.best', 'Abigail');
-		$this->assertEquals($array['name'], 'Taylor');
-		$this->assertEquals($array['names']['aunt'], 'Tammy');
-		$this->assertEquals($array['names']['friends']['best'], 'Abigail');
+		$this->assertEquals('Taylor', $array['name']);
+		$this->assertEquals('Tammy', $array['names']['aunt']);
+		$this->assertEquals('Abigail', $array['names']['friends']['best']);
 	}
 
 	/**

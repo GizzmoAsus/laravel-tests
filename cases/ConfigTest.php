@@ -15,23 +15,23 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
 
 	public function test_config_get_can_retrieve_item_from_configuration()
 	{
-		$this->assertTrue(is_array(Config::get('application')));
-		$this->assertEquals(Config::get('application.url'), 'http://localhost');
+		$this->assertInternalType('array', Config::get('application'));
+		$this->assertEquals('http://localhost', Config::get('application.url'));
 	}
 
 	public function test_get_method_returns_default_when_requested_item_doesnt_exist()
 	{
 		$this->assertNull(Config::get('config.item'));
-		$this->assertEquals(Config::get('config.item', 'test'), 'test');
-		$this->assertEquals(Config::get('config.item', function() {return 'test';}), 'test');
+		$this->assertEquals('test', Config::get('config.item', 'test'));
+		$this->assertEquals('test', Config::get('config.item', function() {return 'test';}));
 	}
 
 	public function test_config_set_can_set_configuration_items()
 	{
 		Config::set('application.names.test', 'test');
 		Config::set('test', array());
-		$this->assertEquals(Config::get('application.names.test'), 'test');
-		$this->assertEquals(Config::get('test'), array());
+		$this->assertEquals('test', Config::get('application.names.test'));
+		$this->assertEquals(array(), Config::get('test'));
 	}
 
 }

@@ -18,9 +18,9 @@ class RouteFilterTest extends PHPUnit_Framework_TestCase {
 
 		Filter::register($filters);
 
-		$this->assertEquals(Filter::run(array('simple'), array(), true), 'simple');
-		$this->assertEquals(Filter::run(array('parameters:1,2'), array(), true), '1|2|');
-		$this->assertEquals(Filter::run(array('parameters:1,2'), array(3), true), '3|1|2');
+		$this->assertEquals('simple', Filter::run(array('simple'), array(), true));
+		$this->assertEquals('1|2|', Filter::run(array('parameters:1,2'), array(), true));
+		$this->assertEquals('3|1|2', Filter::run(array('parameters:1,2'), array(3), true));
 	}
 
 	public function test_after_filters_are_called()

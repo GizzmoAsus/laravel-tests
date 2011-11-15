@@ -13,7 +13,7 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 
 		$expected = require APP_PATH.'routes'.EXT;
 
-		$this->assertEquals(count($routes), count($expected));
+		$this->assertCount(count($expected), $routes);
 		$this->assertArrayHasKey('GET /', $routes);
 		$this->assertArrayHasKey('GET /root', $routes);
 	}
@@ -25,7 +25,7 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 		$root = require APP_PATH.'routes'.EXT;
 		$user = require ROUTE_PATH.'user'.EXT;
 
-		$this->assertEquals(count($routes), count($root + $user));
+		$this->assertCount(count($root + $user), $routes);
 		$this->assertArrayHasKey('GET /user', $routes);
 		$this->assertArrayHasKey('GET /user/login', $routes);
 
@@ -33,7 +33,7 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 
 		$routes = $this->loader->load('admin');
 
-		$this->assertEquals(count($routes), count($admin + $root));
+		$this->assertCount(count($admin + $root), $routes);
 		$this->assertArrayHasKey('GET /admin', $routes);
 	}
 
@@ -44,7 +44,7 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 		$panel = require ROUTE_PATH.'admin/panel'.EXT;
 		$root = require APP_PATH.'routes'.EXT;
 
-		$this->assertEquals(count($routes), count($root + $panel));
+		$this->assertCount(count($root + $panel), $routes);
 		$this->assertArrayHasKey('GET /', $routes);
 		$this->assertArrayHasKey('GET /admin/panel', $routes);
 	}
@@ -58,7 +58,7 @@ class RouteLoaderTest extends PHPUnit_Framework_TestCase {
 
 		$routes = $this->loader->everything();
 
-		$this->assertEquals(count($routes), count($root + $user + $admin + $panel));
+		$this->assertCount(count($root + $user + $admin + $panel), $routes);
 	}
 
 }

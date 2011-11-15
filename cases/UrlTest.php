@@ -4,46 +4,46 @@ class UrlTest extends PHPUnit_Framework_TestCase {
 
 	public function test_simple_url()
 	{
-		$this->assertEquals(URL::to(''), 'http://localhost/index.php/');
-		$this->assertEquals(URL::to('something'), 'http://localhost/index.php/something');
+		$this->assertEquals('http://localhost/index.php/', URL::to(''));
+		$this->assertEquals('http://localhost/index.php/something', URL::to('something'));
 	}
 
 	public function test_simple_url_without_index()
 	{
 		Config::set('application.index', '');
 
-		$this->assertEquals(Url::to(''), 'http://localhost/');
-		$this->assertEquals(Url::to('something'), 'http://localhost/something');
+		$this->assertEquals('http://localhost/', Url::to(''));
+		$this->assertEquals('http://localhost/something', Url::to('something'));
 
 		Config::set('application.index', 'index.php');
 	}
 
 	public function test_asset_url()
 	{
-		$this->assertEquals(URL::to_asset('img/test.jpg'), 'http://localhost/img/test.jpg');
+		$this->assertEquals('http://localhost/img/test.jpg', URL::to_asset('img/test.jpg'));
 
 		Config::set('application.index', '');
 
-		$this->assertEquals(URL::to_asset('img/test.jpg'), 'http://localhost/img/test.jpg');
+		$this->assertEquals('http://localhost/img/test.jpg', URL::to_asset('img/test.jpg'));
 
 		Config::set('application.index', 'index.php');
 	}
 
 	public function test_secure_url()
 	{
-		$this->assertEquals(URL::to_secure('something'), 'https://localhost/index.php/something');
+		$this->assertEquals('https://localhost/index.php/something', URL::to_secure('something'));
 
 		Config::set('application.ssl', false);
 
-		$this->assertEquals(URL::to_secure('something'), 'http://localhost/index.php/something');
+		$this->assertEquals('http://localhost/index.php/something', URL::to_secure('something'));
 
 		Config::set('application.ssl', true);
 	}
 
 	public function test_slug()
 	{
-		$this->assertEquals(URL::slug('My favorite blog!!'), 'my-favorite-blog');
-		$this->assertEquals(URL::slug('My favorite blog!!', '_'), 'my_favorite_blog');
+		$this->assertEquals('my-favorite-blog', URL::slug('My favorite blog!!'));
+		$this->assertEquals('my_favorite_blog', URL::slug('My favorite blog!!', '_'));
 	}
 
 }
