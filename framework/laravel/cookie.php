@@ -1,8 +1,8 @@
 <?php namespace Laravel; use Closure;
 
-if (trim(Config::get('application.key')) === '')
+if (trim(Config::$items['application']['key']) === '')
 {
-	throw new \Exception('The cookie class may not be used without an application key.');
+	throw new \LogicException('The cookie class may not be used without an application key.');
 }
 
 class Cookie {
@@ -114,7 +114,7 @@ class Cookie {
 	 */
 	protected static function hash($name, $value)
 	{
-		return sha1($name.$value.Config::get('application.key'));
+		return sha1($name.$value.Config::$items['application']['key']);
 	}
 
 	/**

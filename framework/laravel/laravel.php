@@ -23,18 +23,16 @@ date_default_timezone_set(Config::$items['application']['timezone']);
  */
 $handler = function($exception)
 {
-	$config = Config::get('error');
+	$config = Config::$items['error'];
 
 	if ($config['log'])
 	{
-		call_user_func($config['logger'], $exception, $config);
+		call_user_func($config['logger'], $exception);
 	}
-
-	call_user_func($config['handler'], $exception, $config);
 
 	if ($config['detail'])
 	{
-		echo "<html><h2>Uncaught Exception</h2>
+		echo "<html><h2>Unhandled Exception</h2>
 			  <h3>Message:</h3>
 			  <pre>".$exception->getMessage()."</pre>
 			  <h3>Location:</h3>
@@ -42,6 +40,12 @@ $handler = function($exception)
 			  <h3>Stack Trace:</h3>
 			  <pre>".$exception->getTraceAsString()."</pre></html>";
 	}
+	else
+	{
+		Response::error('500')->send();
+	}
+
+	exit(1);
 };
 
 /**
@@ -59,9 +63,14 @@ set_exception_handler(function($exception) use ($handler)
  * handler, which will convert the error into an ErrorException object
  * and pass the exception into the common exception handler.
  */
-set_error_handler(function($number, $error, $file, $line) use ($handler)
+set_error_handler(function($number, $error, $file, $line)
 {
-	$handler(new \ErrorException($error, $number, 0, $file, $line));
+	if (error_reporting() === 0 or in_array($number, Config::$items['error']['ignore']))
+	{
+		return;
+	}
+
+	throw new \ErrorException($error, $number, 0, $file, $line);
 });
 
 /**
@@ -84,19 +93,15 @@ register_shutdown_function(function() use ($handler)
  * Setting the PHP error reporting level to -1 essentially forces
  * PHP to report every error, and is guranteed to show every error
  * on future versions of PHP.
- */
-error_reporting(-1);
-
-/**
+ *
  * If error detail is turned off, we will turn off all PHP error
  * reporting and display since the framework will be displaying a
  * generic message and we don't want any sensitive details about
  * the exception leaking into the views.
  */
-if ( ! Config::$items['error']['detail'])
-{
-	ini_set('display_errors', 'Off');	
-}
+error_reporting(-1);
+
+ini_set('display_errors', 'Off');
 
 /**
  * Load the session and session manager instance. The session
@@ -122,6 +127,7 @@ if (Config::$items['session']['driver'] !== '')
  * we can avoid using the loader for these classes. This saves us
  * some overhead on each request.
  */
+require SYS_PATH.'uri'.EXT;
 require SYS_PATH.'input'.EXT;
 require SYS_PATH.'request'.EXT;
 require SYS_PATH.'response'.EXT;
@@ -177,15 +183,13 @@ Input::$input = $input;
  */
 Routing\Filter::register(require APP_PATH.'filters'.EXT);
 
-list($uri, $method) = array(Request::uri(), Request::method());
-
 $loader = new Routing\Loader(APP_PATH, ROUTE_PATH);
 
 $router = new Routing\Router($loader, CONTROLLER_PATH);
 
 IoC::instance('laravel.routing.router', $router);
 
-Request::$route = $router->route($method, $uri);
+Request::$route = $router->route(Request::method(), URI::current());
 
 if ( ! is_null(Request::$route))
 {

@@ -8,17 +8,6 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 	{
 		$_POST = array();
 		$_SERVER = array();
-
-		Request::$uri = null;
-	}
-
-	/**
-	 * @dataProvider requestUriProvider
-	 */
-	public function test_correct_uri_is_returned_when_request_uri_is_used($uri, $expectation)
-	{
-		$_SERVER['REQUEST_URI'] = $uri;
-		$this->assertEquals($expectation, Request::uri());
 	}
 
 	public function test_request_method_returns_spoofed_method_if_uri_is_spoofed()
@@ -84,22 +73,6 @@ class RequestTest extends PHPUnit_Framework_TestCase {
 	{
 		$_SERVER['HTTP_X_REQUESTED_WITH'] = 'xmlhttprequest';
 		$this->assertTrue(Request::ajax());
-	}
-
-	public function requestUriProvider()
-	{
-		return array(
-			array('/index.php', '/'),
-			array('/index.php/', '/'),
-			array('http://localhost/user', 'user'),
-			array('http://localhost/user/', 'user'),
-			array('http://localhost/index.php', '/'),
-			array('http://localhost/index.php/', '/'),
-			array('http://localhost/index.php//', '/'),
-			array('http://localhost/index.php/user', 'user'),
-			array('http://localhost/index.php/user/', 'user'),
-			array('http://localhost/index.php/user/profile', 'user/profile'),
-		);
 	}
 
 }
