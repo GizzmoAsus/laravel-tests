@@ -61,15 +61,6 @@ class ValidatorTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($name, $validator->errors->first('validator_photo'));
 	}
 
-	public function testConstructorShouldSetProperties()
-	{
-		$validator = new Validator($attributes = array('name' => 'test'), $rules = array('name' => 'required'), $messages = array('required' => 'test'));
-
-		$this->assertEquals($validator->attributes, $attributes);
-		$this->assertEquals($validator->rules, array('name' => array('required')));
-		$this->assertEquals($validator->messages, $messages);
-	}
-
 	public function testValidShouldReturnTrueWhenNoErrorsAreSet()
 	{
 		$this->assertTrue(Validator::make(array('name' => 'test'), array())->valid());

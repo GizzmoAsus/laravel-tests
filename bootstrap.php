@@ -12,7 +12,7 @@ $laravel     = 'framework/laravel';
 
 $public      = 'framework/public';
 
-define('FIXTURE_PATH', __DIR__.'/Fixtures/');
+define('FIXTURE_PATH', __DIR__.'/fixtures/');
 
 /*
 |--------------------------------------------------------------------------
