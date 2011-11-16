@@ -6,7 +6,7 @@
 
 class RedirectTest extends PHPUnit_Framework_TestCase {
 
-	function test_redirect_to_string()
+	function testRedirectToString()
 	{
 		$url = URL::to('test');
 		$response = Redirect::to('test');
@@ -14,77 +14,57 @@ class RedirectTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($url, $response->headers['Location']);
 	}
 
-	function test_redirect_to_secure_string()
+	function testRedirectToSecureString()
 	{
 		$url = URL::to_secure('test');
 		$response = Redirect::to_secure('test');
 		$this->assertEquals($url, $response->headers['Location']);
 	}
 
-	function test_redirect_with_status()
+	function testRedirectWithStatus()
 	{
 		$response = Redirect::to('test', 303); // See Other
 		$this->assertEquals(303, $response->status);
 	}
 
-	// Exception: Error resolving [laravel.routing.router]. No resolver has been registered in the container.
-
-	// function test_redirect_to_named_route()
-	// {
-	//     $url = URL::to_login();
-	//     $response = Redirect::to_login();
-	//     $this->assertEquals($url, $response->headers['Location']);
-	// }
-
-	// Exception: Error resolving [laravel.routing.router]. No resolver has been registered in the container.
-
-	// function test_redirect_to_secure_named_route()
-	// {
-	//     $url = URL::to_secure_login();
-	//     $response = Redirect::to_secure_login();
-	//     $this->assertEquals($url, $response->headers['Location']);
-	// }
-
-	// Exception: Error resolving [laravel.routing.router]. No resolver has been registered in the container.
-
-	// function test_redirect_to_named_route_with_status()
-	// {
-	//     $response = Redirect::to_login(array(), 303);
-	//     $this->assertEquals(303, $response->status);
-	// }
-
-	// PHPUnit Exception: Cannot expect a base Exception
-
-	// /*
-	//  * @expectedException RuntimeException
-	//  * @expectedExceptionMessage A session driver must be set before setting flash data.
-	//  */
-	// function test_redirect_with_flash_throws_session_exception()
-	// {
-	//     $driver = Config::get('session.driver');
-	//     Config::set('session.driver', '');
-	//     try {
-	//         Redirect::to('test')->with('flash', 'Your message');
-	//     }
-	//     catch (Exception $e) {
-	//         Config::set('session.driver', $driver);
-	//         throw $e;
-	//     }
-	// }
+	/**
+	 * @expectedException LogicException
+	 * @expectedExceptionMessage A session driver must be set before setting flash data.
+	 */
+	function testRedirectWithFlashThrowsSessionDriverException()
+	{
+		Config::set('session.driver', '');
+		Redirect::to('test')->with('flash', 'Your message');
+	}
 
 	// Exception: Error resolving [laravel.session]. No resolver has been registered in the container.
 
-	// function test_redirect_with_flash()
-	// {
-	//     $driver = Config::get('session.driver');
-	//     Config::set('session.driver', 'file');
+	function testRedirectWithFlash()
+	{
+		Config::set('application.key', 'test');
+		Config::set('session.driver', 'mock');
 
-	//     $response = Redirect::to('test')->with('flash', 'Your message');
-	//     $flash = IoC::core('session')->get('flash');
-	//     $this->assertEquals('Your message', $flash);
+		$driver = $this->getMock('Laravel\\Session\\Drivers\\Driver');
 
-	//     Config::set('session.driver', $driver);
-	// }
+		$session = $this->getMock('Laravel\\Session\\Payload', array(), array($driver, 'test'));
+		$session->expects($this->once())
+			->method('flash')
+			->with($this->equalTo('flash', 0),
+			   $this->equalTo('Your message', 1));
+		IoC::instance('laravel.session', $session);
+
+		$response = Redirect::to('test')->with('flash', 'Your message');
+
+		unset($driver, $session);
+		Config::set('application.key', '');
+		Config::set('session.driver', '');
+	}
+	
+	
+	private function getMockDriver()
+	{
+		return $this->getMock('Laravel\\Session\\Drivers\\Driver');
+	}
 
 }
 
