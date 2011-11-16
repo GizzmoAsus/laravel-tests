@@ -60,11 +60,5 @@ class RedirectTest extends PHPUnit_Framework_TestCase {
 		Config::set('session.driver', '');
 	}
 	
-	
-	private function getMockDriver()
-	{
-		return $this->getMock('Laravel\\Session\\Drivers\\Driver');
-	}
-
 }
 
