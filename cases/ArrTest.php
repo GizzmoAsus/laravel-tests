@@ -39,18 +39,22 @@ class ArrTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function test_forget_method_removes_items_from_array($array)
 	{
-		$copy = $array;
+		Arr::forget($array, 'email');
+		$this->assertFalse(isset($array['email']));
+		$this->assertTrue(isset($array['names']));
 
+		Arr::forget($array, 'names');
+		$this->assertFalse(isset($array['names']));
+	}
+
+	/**
+	 * @dataProvider getArray
+	 */
+	public function test_forget_method_removes_nested_items_from_array($array)
+	{
 		Arr::forget($array, 'names.uncle');
 		$this->assertEquals(0, count($array['names']));
 		$this->assertTrue(isset($array['email']));
-
-		Arr::forget($array, 'email');
-		$this->assertFalse(isset($array['email']));
-
-		Arr::forget($copy, 'names');
-		$this->assertFalse(isset($copy['names']));
-		$this->assertTrue(isset($copy['email']));
 	}
 
 	/**
