@@ -13,7 +13,6 @@ class SectionTest extends PHPUnit_Framework_TestCase {
 		$level = ob_get_level();
 		Section::start('level');
 		$this->assertEquals($level+1, ob_get_level());
-
 		Section::stop();
 	}
 
@@ -22,7 +21,6 @@ class SectionTest extends PHPUnit_Framework_TestCase {
 		Section::start('body'); // Pushes '' onto the section
 		echo 'This is my body';
 		Section::stop(); // Appends PHP_EOL.$content
-
 		$this->assertEquals(PHP_EOL.'This is my body', Section::$sections['body']);
 	}
 
@@ -30,7 +28,6 @@ class SectionTest extends PHPUnit_Framework_TestCase {
 	{
 		Section::inject('name', 'Phill');
 		Section::inject('name', 'Sparks');
-
 		$this->assertEquals('Phill'.PHP_EOL.'Sparks', Section::$sections['name']);
 	}
 

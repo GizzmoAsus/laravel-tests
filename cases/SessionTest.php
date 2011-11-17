@@ -27,8 +27,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 	public function test_session_manager_calls_driver_load_with_session_id($driver)
 	{
 		$driver->expects($this->once())
-                            ->method('load')
-                            ->with($this->equalTo('something'));
+			->method('load')
+			->with($this->equalTo('something'));
 
 		$session = new Session($driver, 'something');
 	}
@@ -78,6 +78,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 	public function test_session_manager_sets_csrf_token_if_one_is_not_present($driver)
 	{
 		$session = $this->getDummyData();
+
 		unset($session['data']['csrf_token']);
 
 		$this->setDriverExpectation($driver, 'load', $session);
@@ -94,13 +95,13 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 	public function test_save_method_calls_driver($driver)
 	{
 		$driver->expects($this->any())
-                            ->method('load')
-                            ->will($this->returnValue($this->getDummyData()));
+			->method('load')
+			->will($this->returnValue($this->getDummyData()));
 
 		$session = new Session($driver, 'test');
 
 		$driver->expects($this->once())
-                            ->method('save');
+			->method('save');
 
 		$session->save($driver);
 	}
