@@ -37,6 +37,25 @@ class ArrTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * @dataProvider getArray
 	 */
+	public function test_forget_method_removes_items_from_array($array)
+	{
+		$copy = $array;
+
+		Arr::forget($array, 'names.uncle');
+		$this->assertEquals(0, count($array['names']));
+		$this->assertTrue(isset($array['email']));
+
+		Arr::forget($array, 'email');
+		$this->assertFalse(isset($array['email']));
+
+		Arr::forget($copy, 'names');
+		$this->assertFalse(isset($copy['names']));
+		$this->assertTrue(isset($copy['email']));
+	}
+
+	/**
+	 * @dataProvider getArray
+	 */
 	public function test_first_method_returns_first_item_passing_truth_test($array)
 	{
 		$array['email2'] = 'taylor@hotmail.com';
