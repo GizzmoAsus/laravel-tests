@@ -93,12 +93,6 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(defined('ROUTE_AFTER_FILTER'));
 	}
 
-	public function test_routes_that_return_null_return_404_response()
-	{
-		$route = new Route('GET /', function() {return;}, array());
-		$this->assertEquals(404, $route->call()->status);
-	}
-
 	public function test_controller_is_called_for_delegate_routes()
 	{
 		$route = new Route('GET /blog', 'blog@index', array());

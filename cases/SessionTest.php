@@ -30,7 +30,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 			->method('load')
 			->with($this->equalTo('something'));
 
-		$session = new Session($driver, 'something');
+		$session = new Session($driver);
+		$session->load('something');
 	}
 
 	/**
@@ -40,7 +41,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 	{
 		$this->setDriverExpectation($driver, 'load', $this->getDummyData());
 
-		$session = new Session($driver, 'test');
+		$session = new Session($driver);
+		$session->load('test');
 
 		$this->assertEquals($this->getDummyData(), $session->session);
 	}
@@ -52,7 +54,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 	{
 		$this->setDriverExpectation($driver, 'load', null);
 
-		$session = new Session($driver, 'test');
+		$session = new Session($driver);
+		$session->load('test');
 
 		$this->assertInternalType('array', $session->session['data']);
 		$this->assertEquals(40, strlen($session->session['id']));
@@ -67,7 +70,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$this->setDriverExpectation($driver, 'load', array('last_activity' => $dateTime->getTimestamp()));
 
-		$session = new Session($driver, 'test');
+		$session = new Session($driver);
+		$session->load('test');
 
 		$this->assertEquals(40, strlen($session->session['id']));
 	}
@@ -83,7 +87,8 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$this->setDriverExpectation($driver, 'load', $session);
 
-		$session = new Session($driver, 'test');
+		$session = new Session($driver);
+		$session->load('test');
 
 		$this->assertArrayHasKey('csrf_token', $session->session['data']);
 		$this->assertEquals(40, strlen($session->session['data']['csrf_token']));
@@ -98,12 +103,13 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 			->method('load')
 			->will($this->returnValue($this->getDummyData()));
 
-		$session = new Session($driver, 'test');
+		$session = new Session($driver);
+		$session->load('test');
 
 		$driver->expects($this->once())
 			->method('save');
 
-		$session->save($driver);
+		$session->save();
 	}
 
 	/**
@@ -115,11 +121,12 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$driver->expects($this->once())->method('sweep');
 
-		$session = new Session($driver, null);
+		$session = new Session($driver);
+		$session->load(null);
 
 		Config::$items['session']['sweepage'] = array(100, 100);
 
-		$session->save($driver);
+		$session->save();
 	}
 
 	/**
@@ -131,11 +138,12 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 		$driver->expects($this->never())->method('sweep');
 
-		$session = new Session($driver, null);
+		$session = new Session($driver);
+		$session->load(null);
 
 		Config::$items['session']['sweepage'] = array(100, 100);
 
-		$session->save($driver);
+		$session->save();
 	}
 
 	public function test_has_method_indicates_if_item_exists_in_payload()
@@ -280,7 +288,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
 	public function getDummySession()
 	{
-		$session = new Session(new Laravel\Session\Drivers\File(''), null);
+		$session = new Session($this->getMockDriver());
 		$session->session = $this->getDummyData();
 		return $session;
 	}
