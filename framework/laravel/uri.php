@@ -41,9 +41,6 @@ class URI {
 			$uri = static::remove($uri, $index);
 		}
 
-		// Format the final request URI. If there is nothing left, we will just
-		// return a single forward slash. Otherwise, we'll remove all of the
-		// leading and trailing spaces from the URI before returning it.
 		static::$uri = static::format($uri);
 
 		static::$segments = explode('/', static::$uri);
@@ -93,7 +90,7 @@ class URI {
 	 * Format a given URI.
 	 *
 	 * If the URI is an empty string, a single forward slash will be returned.
-	 * Otherwise, we will simply trim the URI's leading and trailing slashes.
+	 * Otherwise, we will trim the URI's leading and trailing slashes.
 	 *
 	 * @param  string  $uri
 	 * @return string
