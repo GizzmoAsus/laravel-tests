@@ -20,4 +20,4 @@ define('FIXTURE_PATH', __DIR__.'/fixtures/');
 |--------------------------------------------------------------------------
 */
 
-require realpath($laravel).'/bootstrap/core.php';
+require realpath($laravel).'/core.php';

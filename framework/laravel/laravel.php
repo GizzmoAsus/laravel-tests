@@ -5,7 +5,7 @@
  * configuration class, and the class auto-loader. Once this file
  * has run, the framework is essentially ready for use.
  */
-require 'bootstrap/core.php';
+require 'core.php';
 
 /**
  * Register the default timezone for the application. This will be
@@ -123,31 +123,14 @@ ini_set('display_errors', 'Off');
  */
 if (Config::$items['session']['driver'] !== '')
 {
-	require SYS_PATH.'ioc'.EXT;
-	require SYS_PATH.'session/payload'.EXT;
-	require SYS_PATH.'session/drivers/driver'.EXT;
-	require SYS_PATH.'session/drivers/factory'.EXT;
-
-	$id = Cookie::get(Config::$items['session']['cookie']);
-
 	$driver = Session\Drivers\Factory::make(Config::$items['session']['driver']);
 
-	IoC::instance('laravel.session', new Session\Payload($driver, $id));
-}
+	$session = new Session\Payload($driver);
 
-/**
- * Manually load some core classes that are used on every request so
- * we can avoid using the loader for these classes. This saves us
- * some overhead on each request.
- */
-require SYS_PATH.'uri'.EXT;
-require SYS_PATH.'input'.EXT;
-require SYS_PATH.'request'.EXT;
-require SYS_PATH.'response'.EXT;
-require SYS_PATH.'routing/route'.EXT;
-require SYS_PATH.'routing/router'.EXT;
-require SYS_PATH.'routing/loader'.EXT;
-require SYS_PATH.'routing/filter'.EXT;
+	$session->load(Cookie::get(Config::$items['session']['cookie']));
+
+	IoC::instance('laravel.session', $session);
+}
 
 /**
  * Gather the input to the application based on the current request.
